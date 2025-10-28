@@ -112,34 +112,73 @@ MIDI Input / Keyboard
     AudioContext.destination
 ```
 
-### Module Dependencies
+### Project Structure (SvelteKit SPA)
 
 ```
 plugins/lofi-piano/web/
 ├── src/
-│   ├── App.svelte                    # Main plugin UI
-│   ├── components/
-│   │   ├── PianoKeyboard.svelte      # 88-key MIDI keyboard
-│   │   ├── ControlPanel.svelte       # Parameter controls
-│   │   └── WaveformVisualizer.svelte # Real-time audio visualization
-│   ├── audio/
-│   │   ├── piano-voice.js            # Core piano synthesis (from shared)
-│   │   ├── effect-chain.js           # Effect routing and automation
-│   │   └── midi-manager.js           # MIDI input handling
-│   ├── stores/
-│   │   └── audio-state.js            # Global audio parameters ($state)
-│   └── utils/
-│       └── note-to-frequency.js      # MIDI note ↔ frequency conversion
-│
-└── Imports from shared:
-    ├── @audio/synthesis/oscillators
-    ├── @audio/synthesis/envelopes (ADSR)
-    ├── @audio/effects/saturation     (NEW - to create)
-    ├── @audio/effects/compression    (NEW - to create)
-    ├── @audio/effects/reverb         (NEW - to create)
-    ├── @ui/controls/Knob
-    ├── @ui/controls/Slider
-    └── @ui/controls/Button
+│   ├── lib/
+│   │   ├── audio/                    # 🎵 Audio DSP modules
+│   │   │   ├── synthesis/
+│   │   │   │   ├── piano-voice.js    # Core piano voice (3 osc + ADSR)
+│   │   │   │   └── voice-pool.js     # Polyphony management
+│   │   │   ├── effects/
+│   │   │   │   ├── saturation.js     # Tape saturation
+│   │   │   │   ├── compression.js    # Dynamic range compression
+│   │   │   │   └── reverb.js         # Spatial reverb
+│   │   │   ├── effects-chain.js      # Audio graph coordinator
+│   │   │   └── context.js            # AudioContext singleton
+│   │   ├── components/               # 🎨 UI components
+│   │   │   ├── controls/
+│   │   │   │   ├── Knob.svelte       # Parameter knob (from @ui or local)
+│   │   │   │   ├── Slider.svelte     # Range input
+│   │   │   │   └── Button.svelte     # Interactive button
+│   │   │   ├── piano/
+│   │   │   │   ├── PianoKeyboard.svelte
+│   │   │   │   ├── ControlPanel.svelte
+│   │   │   │   └── Visualizer.svelte
+│   │   │   └── Layout.svelte         # Root layout
+│   │   ├── stores/                   # 📊 Reactive state
+│   │   │   └── audio-state.svelte.js # Global $state using Svelte 5
+│   │   ├── types/                    # 📝 TypeScript types
+│   │   │   └── audio.ts
+│   │   └── utils/                    # 🔧 Helper functions
+│   │       ├── note-to-frequency.js
+│   │       ├── midi-manager.js
+│   │       └── constants.js
+│   ├── routes/
+│   │   ├── +page.svelte              # Main SPA page
+│   │   └── +layout.svelte            # Root layout wrapper
+│   ├── app.html                      # HTML template
+│   ├── hooks.client.js               # Client hooks (optional)
+│   └── service-worker.js             # PWA support (optional)
+├── static/
+│   ├── favicon.png
+│   └── manifest.json                 # PWA manifest
+├── tests/
+│   ├── audio.test.js                 # Audio module unit tests
+│   └── components.test.js            # Component tests (vitest)
+├── package.json
+├── svelte.config.js
+├── tsconfig.json
+├── vite.config.js
+├── vitest.config.js                  # Testing configuration
+└── .prettierrc / .eslintrc            # Code quality tools
+
+Key: This is a SPA (Single-Page App), NOT a full-stack SvelteKit app
+- No server-side routes (no +server.js files)
+- No SSR needed (all client-side rendering)
+- Minimal SvelteKit overhead
+- Can be deployed as static site or standalone
+
+Imports from shared (monorepo):
+    ├── @audio/synthesis/oscillators    (if available)
+    ├── @audio/synthesis/envelopes      (if available)
+    ├── @ui/controls/Knob               (if available)
+    ├── @ui/controls/Slider             (if available)
+    └── @ui/controls/Button             (if available)
+
+Or create local implementations in src/lib/
 ```
 
 ---
