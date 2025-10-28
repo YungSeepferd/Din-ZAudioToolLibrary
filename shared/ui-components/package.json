@@ -1,0 +1,14 @@
+{
+  "name": "@audio-playground/ui-components",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Reusable Svelte UI components for audio plugins",
+  "svelte": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./controls": "./controls/index.js",
+    "./visualizers": "./visualizers/index.js",
+    "./layouts": "./layouts/index.js"
+  },
+  "files": ["controls", "visualizers", "layouts", "index.js"]
+}

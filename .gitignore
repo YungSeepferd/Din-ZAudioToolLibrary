@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.turbo/
+*.node
+
+# Tauri
+target/
+src-tauri/target/
+WixTools/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Audio files (keep samples folder tracked)
+*.wav
+*.mp3
+*.aiff
+!resources/samples/.gitkeep
