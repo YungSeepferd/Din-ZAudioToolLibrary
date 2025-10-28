@@ -10,5 +10,15 @@ export default defineConfig({
   build: {
     target: 'ES2020',
     sourcemap: true
-  }
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
+    globals: true
+  },
+  resolve: process.env.VITEST
+    ? {
+        conditions: ['browser']
+      }
+    : undefined
 });

@@ -15,7 +15,15 @@ let audioContext = null;
  */
 export function getAudioContext() {
   if (!audioContext) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const AudioContextClass =
+      (typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext)) ||
+      globalThis.AudioContext ||
+      globalThis.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      throw new Error('AudioContext is not available in this environment');
+    }
+
     audioContext = new AudioContextClass();
   }
   return audioContext;
