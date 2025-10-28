@@ -283,45 +283,238 @@ The project integrates learnings from multiple audio frameworks:
 
 **Cross-Framework Learning**: See `docs/FRAMEWORKS_AND_TOOLS.md` for comparison matrices and translation patterns between Pure Data, SuperCollider, and Web Audio.
 
-## 🛠️ Claude Code MCP Servers
+## 🛠️ Claude Code MCP Servers & Tools
 
-This project is pre-configured with 12+ MCP servers for enhanced Claude Code capabilities.
+This project is pre-configured with multiple MCP servers and Claude Code tools for enhanced capabilities.
 
-### Configured Servers (Enabled by Default)
+### Complete Toolkit Reference
 
+#### Built-in Claude Code Tools
+
+| Tool | Purpose | When to Use |
+|------|---------|------------|
+| **Read** | Read file contents efficiently | Reading any file (code, docs, config); handles large files with offset/limit |
+| **Write** | Create files from scratch | Creating new files only when necessary; ALWAYS prefer Edit over Write |
+| **Edit** | Precise string replacements in files | Modifying existing files; preserves formatting and indentation |
+| **Glob** | Fast file pattern matching | Finding files by name/extension patterns (e.g., `src/**/*.svelte`) |
+| **Grep** | Search file contents by regex | Searching for keywords, functions, patterns across multiple files |
+| **Bash** | Execute shell commands | Git operations, npm/pnpm commands, terminal tasks; not for file operations |
+| **Task** | Launch specialized agents | Complex multi-file exploration, research tasks, code analysis |
+| **TodoWrite** | Track and manage tasks | Plan work, mark progress, organize steps; essential for multi-step tasks |
+| **WebFetch** | Fetch and analyze web content | Retrieving documentation, analyzing web pages (auto-converts HTML to markdown) |
+| **WebSearch** | Search the web | Finding up-to-date information beyond knowledge cutoff |
+| **ExitPlanMode** | Exit planning mode | Mark end of planning phase when ready to implement code |
+| **AskUserQuestion** | Ask clarification questions | Gather user preferences, resolve ambiguities during execution |
+
+#### MCP Servers (Active Configuration in .mcp.json)
+
+| Server | Type | Status | When to Use |
+|--------|------|--------|------------|
+| **svelte** | HTTP Remote | ✅ Enabled | Creating UI components, Svelte 5 Runes, reactivity, component patterns |
+| **github** | Node Command | ✅ Enabled | Repository management, PR creation, issue queries, code search |
+| **sequential-thinking** | Node Command | ✅ Enabled | Complex problem-solving, multi-step reasoning, planning algorithms |
+| **quillopy** | Node Command | ✅ Enabled | Fetch documentation for libraries (Tone.js, Web Audio, etc.); @quillopy [library] syntax |
+| **playwright** | Node Command | ✅ Enabled | Browser automation, testing UI components, visual regression testing |
+| **mcp-compass** | Node Command | ✅ Enabled | Discover and recommend MCP servers for new tasks |
+| **nodejs-docs** | Node Command | ❌ Disabled | Node.js API reference; not available on npm (swap for alternate if needed) |
+
+#### MCP Server Usage Patterns
+
+**Single Server Query**:
+```bash
+@svelte explain how to use $state in Svelte 5
+@quillopy[tone.js] how do I create a synth?
 ```
-✓ svelte         - Svelte 5 documentation and API reference
-✓ web-audio      - Web Audio API documentation and patterns
-✓ nodejs-docs    - Node.js API reference
-✓ git            - Git operations and commit analysis
-✓ filesystem     - Safe file operations
-✓ bash           - Execute bash commands
-✓ npm-registry   - NPM package search and version info
+
+**Multi-Server Query** (combines expertise):
+```bash
+@svelte @quillopy[web-audio] help me create an audio frequency knob
 ```
 
-### Optional Servers (Disabled by Default)
+**GitHub Operations**:
+```bash
+# Search repositories
+@github search repositories for "audio plugin"
 
-```
-⚫ github        - GitHub repository management (requires GITHUB_TOKEN)
-⚫ code-analysis - Advanced code analysis (optional)
-⚫ eslint        - ESLint rules and configuration (optional)
-⚫ prettier      - Prettier formatting rules (optional)
+# Create/manage issues and PRs
+@github create a pull request
 ```
 
-### Using MCP Servers
-
+**Problem-Solving**:
+```bash
+@sequential-thinking explain the audio graph for a ping-pong delay
 ```
+
+**Discovery**:
+```bash
+@mcp-compass recommend MCP server for Web MIDI integration
+```
+
+#### Recommended Tool Workflows
+
+**Finding Code**:
+1. Use `Glob` for fast file pattern matching (e.g., find all `.svelte` files)
+2. Use `Grep` for content search with regex
+3. Use `Task` with `subagent_type=Explore` for complex multi-file investigation
+
+**Reading Files**:
+- Use `Read` tool (handles large files, can specify offset/limit)
+- Never use `cat`, `head`, `tail` via Bash for file reading
+
+**Modifying Code**:
+- Use `Edit` tool for precise replacements (preserves indentation)
+- Use `Write` only for creating new files (avoid unless necessary)
+- Never use `sed`, `awk`, or shell redirection for file edits
+
+**Executing Commands**:
+- Use `Bash` for git, npm/pnpm, docker, terminal operations
+- Quote paths with spaces: `cd "/path with spaces/file.txt"`
+- Chain dependent commands with `&&` in a single Bash call
+- Run independent commands in parallel with separate Bash calls
+
+**External Information**:
+- Use `@svelte` for Svelte 5 documentation
+- Use `@quillopy[package-name]` for up-to-date library docs
+- Use `WebFetch` to analyze specific web pages
+- Use `WebSearch` for current information beyond knowledge cutoff
+
+### Choosing the Right Tool for Your Task
+
+#### Scenario: Understanding Codebase Structure
+```
+✓ Use: Task tool with subagent_type="Explore" (medium/very thorough)
+Why: Explores multiple files, patterns, and relationships efficiently
+❌ Don't use: Grep/Glob directly (misses context)
+```
+
+#### Scenario: Finding a Specific Function/Class
+```
+✓ Use: Glob tool to find file by name pattern
+✓ Use: Grep tool with specific pattern
+Why: Fast, targeted search for known items
+```
+
+#### Scenario: Reading a File's Full Contents
+```
+✓ Use: Read tool (handles large files with offset/limit)
+Why: Efficient file reading with proper formatting
+❌ Don't use: Bash cat command
+```
+
+#### Scenario: Modifying Existing Code
+```
+✓ Use: Edit tool (precise string replacements)
+Why: Preserves formatting, indentation, context
+❌ Don't use: Bash sed/awk
+```
+
+#### Scenario: Creating New File
+```
+✓ Use: Write tool (only if absolutely necessary)
+⚠️ Prefer: Edit existing file instead
+Why: Avoid creating unnecessary files
+```
+
+#### Scenario: Svelte Component Question
+```
+✓ Use: @svelte MCP server
+Example: "@svelte explain how to use bind: in Svelte 5"
+Why: Always up-to-date official docs, Runes syntax
+```
+
+#### Scenario: Audio Algorithm Implementation
+```
+✓ Use: @web-audio MCP server + code
+Example: "@web-audio show how to implement a resonant low-pass filter"
+Why: Official Web Audio API patterns, scheduling best practices
+```
+
+#### Scenario: UI + Audio Combined
+```
+✓ Use: @svelte @web-audio (multi-server)
+Example: "@svelte @web-audio help me create a frequency knob component"
+Why: Combines UI knowledge with audio integration patterns
+```
+
+#### Scenario: Complex Multi-File Exploration
+```
+✓ Use: Task tool with subagent_type="Explore"
+Example: Where are errors from the client handled?
+Why: Explores relationships across multiple files
+```
+
+#### Scenario: Git Analysis / Commit History
+```
+✓ Use: git MCP server OR Bash git commands
+Why: Both available; use whichever feels natural
+```
+
+#### Scenario: Package Dependency Question
+```
+✓ Use: npm-registry MCP server
+Example: "What are the latest versions of Tone.js?"
+Why: Real-time registry data
+```
+
+#### Scenario: Planning Complex Tasks
+```
+✓ Use: TodoWrite tool
+Example: Add todos for: Setup, Design, Implement, Test, Deploy
+Why: Tracks progress, prevents task loss
+```
+
+### MCP Server Usage Examples
+
+```bash
 # Single server query
 @web-audio show how to create a low-pass filter
 @svelte explain Runes reactivity
+@nodejs-docs what is process.env?
 
 # Multi-server query (combines expertise)
 @svelte @web-audio help me create an audio control component
 
-# Enable GitHub server (optional)
+# With specific questions
+@web-audio how do I avoid clicks/pops when changing gain?
+@svelte what's the difference between $state and $derived?
+
+# Enable GitHub server (optional - requires GITHUB_TOKEN)
 export GITHUB_TOKEN=your_personal_access_token
 claude
-# Then: @github show recent commits
+# Then: @github create a pull request
+```
+
+### Decision Tree: Choosing Your Tool
+
+```
+Do you need to find/search something?
+├─ Yes: Use Grep (search content) or Glob (find files)
+│   └─ Complex multi-file exploration? → Use Task(Explore agent)
+└─ No: Continue below
+
+Do you need to read a file?
+├─ Yes: Use Read tool
+└─ No: Continue below
+
+Do you need to modify code?
+├─ Yes: Use Edit tool
+├─ Need external documentation? → Use @mcp-server
+└─ No: Continue below
+
+Do you need to execute commands?
+├─ Yes: Use Bash tool (git, npm, pnpm, etc.)
+└─ No: Continue below
+
+Do you need reference/documentation?
+├─ Yes: Use appropriate @mcp-server
+│   ├─ Svelte code? → @svelte
+│   ├─ Web Audio? → @web-audio
+│   ├─ Node.js? → @nodejs-docs
+│   └─ NPM package? → @npm-registry
+└─ No: Continue below
+
+Do you have multiple independent tasks?
+└─ Yes: Use TodoWrite to track progress
 ```
 
 **Quick Setup**: See `CLAUDE_CODE_QUICK_START.md` for full MCP and GitHub token setup.
