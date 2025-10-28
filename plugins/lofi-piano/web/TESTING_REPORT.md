@@ -57,6 +57,35 @@ npm install -D jsdom
 
 ## 🟡 Current Blockers & Issues
 
+### 0. Svelte 5 Runes Migration Issues
+
+**Severity**: 🟡 Warning (Non-blocking but should be fixed)
+
+**Issue**: Components are not fully migrated to Svelte 5 Runes mode.
+
+**Found Issues**:
+1. **Layout.svelte**: Using `on:click` instead of `onclick` (deprecated event directive) ✅ FIXED
+2. **Layout.svelte**: Local state variables not using `$state()` ✅ FIXED
+3. **PianoKeyboard.svelte**: Using `export let` instead of `$props()` for component props ✅ FIXED
+4. **PianoKeyboard.svelte**: Using `on:` event directives (6 instances) instead of event attributes ✅ FIXED
+5. **ControlPanel.svelte**: Using `export let` instead of `$props()` ✅ FIXED
+6. **ControlPanel.svelte**: Using `on:input` event directives throughout ✅ FIXED
+7. **PresetBrowser.svelte**: Using `export let` instead of `$props()` ✅ FIXED
+8. **PresetBrowser.svelte**: Using `on:click` event directives throughout ✅ FIXED
+
+**Fixes Applied**:
+- ✅ All components migrated to Svelte 5 Runes syntax
+- ✅ Replaced `export let prop` with `let { prop } = $props()` in all components
+- ✅ Replaced all `on:click={handler}` with `onclick={handler}`
+- ✅ Replaced all `on:input={handler}` with `oninput={handler}`
+- ✅ Replaced all `on:mousedown`, `on:mouseup`, `on:touchstart`, `on:touchend` with event attributes
+- ✅ Converted event modifiers (`on:click|stopPropagation`) to inline handlers
+- ✅ All local reactive state now uses `$state()`
+
+**Status**: ✅ FIXED
+
+---
+
 ### 1. TypeScript Configuration Issues
 
 **Severity**: 🟡 Warning (Non-blocking)

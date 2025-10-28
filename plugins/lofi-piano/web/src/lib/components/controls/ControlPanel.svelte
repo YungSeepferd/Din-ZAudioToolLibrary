@@ -12,10 +12,12 @@
    * @component
    */
 
-  /** @type {Object} Audio state manager */
-  export let audioState = undefined;
+  /**
+   * Component props using Svelte 5 $props()
+   */
+  let { audioState = undefined } = $props();
 
-  let showAdvanced = false;
+  let showAdvanced = $state(false);
 
   /**
    * Format parameter value for display
@@ -75,7 +77,7 @@
         max="1"
         step="0.01"
         value={audioState?.pianoState?.masterVolume ?? 0.5}
-        on:input={(e) => handleParameterChange('pianoState.masterVolume', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('pianoState.masterVolume', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -99,7 +101,7 @@
         max="0.5"
         step="0.01"
         value={audioState?.synthesis?.attackTime ?? 0.05}
-        on:input={(e) => handleParameterChange('synthesis.attackTime', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('synthesis.attackTime', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -118,7 +120,7 @@
         max="1"
         step="0.01"
         value={audioState?.synthesis?.decayTime ?? 0.2}
-        on:input={(e) => handleParameterChange('synthesis.decayTime', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('synthesis.decayTime', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -137,7 +139,7 @@
         max="1"
         step="0.01"
         value={audioState?.synthesis?.sustainLevel ?? 0.6}
-        on:input={(e) => handleParameterChange('synthesis.sustainLevel', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('synthesis.sustainLevel', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -156,7 +158,7 @@
         max="3"
         step="0.05"
         value={audioState?.synthesis?.releaseTime ?? 1.0}
-        on:input={(e) => handleParameterChange('synthesis.releaseTime', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('synthesis.releaseTime', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -180,7 +182,7 @@
         max="1"
         step="0.01"
         value={audioState?.effects?.saturation?.amount ?? 0.3}
-        on:input={(e) => handleParameterChange('effects.saturation.amount', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.saturation.amount', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -199,7 +201,7 @@
         max="1"
         step="0.01"
         value={audioState?.effects?.saturation?.tone ?? 0.5}
-        on:input={(e) => handleParameterChange('effects.saturation.tone', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.saturation.tone', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -223,7 +225,7 @@
         max="0"
         step="1"
         value={audioState?.effects?.compression?.threshold ?? -24}
-        on:input={(e) => handleParameterChange('effects.compression.threshold', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.compression.threshold', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -242,7 +244,7 @@
         max="20"
         step="0.1"
         value={audioState?.effects?.compression?.ratio ?? 4}
-        on:input={(e) => handleParameterChange('effects.compression.ratio', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.compression.ratio', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -261,7 +263,7 @@
         max="0.1"
         step="0.001"
         value={audioState?.effects?.compression?.attack ?? 0.003}
-        on:input={(e) => handleParameterChange('effects.compression.attack', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.compression.attack', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -280,7 +282,7 @@
         max="2"
         step="0.01"
         value={audioState?.effects?.compression?.release ?? 0.25}
-        on:input={(e) => handleParameterChange('effects.compression.release', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.compression.release', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -304,7 +306,7 @@
         max="10"
         step="0.1"
         value={audioState?.effects?.reverb?.decayTime ?? 2.0}
-        on:input={(e) => handleParameterChange('effects.reverb.decayTime', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.reverb.decayTime', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -323,7 +325,7 @@
         max="1"
         step="0.01"
         value={audioState?.effects?.reverb?.roomSize ?? 0.5}
-        on:input={(e) => handleParameterChange('effects.reverb.roomSize', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.reverb.roomSize', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -342,7 +344,7 @@
         max="1"
         step="0.01"
         value={audioState?.effects?.reverb?.dryWet ?? 0.3}
-        on:input={(e) => handleParameterChange('effects.reverb.dryWet', parseFloat(e.target.value))}
+        oninput={(e) => handleParameterChange('effects.reverb.dryWet', parseFloat(e.target.value))}
         class="slider"
       />
     </div>
@@ -352,7 +354,7 @@
   <div class="advanced-toggle">
     <button
       class="toggle-btn"
-      on:click={() => (showAdvanced = !showAdvanced)}
+      onclick={() => (showAdvanced = !showAdvanced)}
       aria-expanded={showAdvanced}
     >
       {showAdvanced ? '▼ Hide Advanced' : '▶ Show Advanced'}
@@ -377,7 +379,7 @@
           max="0.2"
           step="0.005"
           value={audioState?.effects?.reverb?.preDelay ?? 0.02}
-          on:input={(e) => handleParameterChange('effects.reverb.preDelay', parseFloat(e.target.value))}
+          oninput={(e) => handleParameterChange('effects.reverb.preDelay', parseFloat(e.target.value))}
           class="slider"
         />
       </div>

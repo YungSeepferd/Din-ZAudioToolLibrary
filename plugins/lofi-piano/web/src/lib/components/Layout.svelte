@@ -17,9 +17,9 @@
   // Create audio state instance
   const audioState = createAudioState();
 
-  let isReady = false;
-  let error = null;
-  let showControls = true;
+  let isReady = $state(false);
+  let error = $state(null);
+  let showControls = $state(true);
 
   onMount(async () => {
     try {
@@ -61,7 +61,7 @@
           <span class="note-count">
             {audioState.pianoState.activeNotes.size} notes playing
           </span>
-          <button class="toggle-btn" on:click={toggleControls}>
+          <button class="toggle-btn" onclick={toggleControls}>
             {showControls ? '▼ Hide Controls' : '▶ Show Controls'}
           </button>
         </div>

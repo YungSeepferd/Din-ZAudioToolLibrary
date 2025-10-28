@@ -14,24 +14,20 @@
 
   import { onMount } from 'svelte';
 
-  /** @type {Object} Audio state manager */
-  export let audioState = undefined;
+  /**
+   * Component props using Svelte 5 $props()
+   */
+  let {
+    audioState = undefined,
+    startNote = 12,
+    keyCount = 88,
+    showNoteNames = true,
+    showOctaveNumbers = true
+  } = $props();
 
-  /** @type {number} Starting MIDI note (default: 12 = C1) */
-  export let startNote = 12;
-
-  /** @type {number} Number of keys to display (default: 88 = full piano) */
-  export let keyCount = 88;
-
-  /** @type {boolean} Show note names on keys */
-  export let showNoteNames = true;
-
-  /** @type {boolean} Show octave numbers */
-  export let showOctaveNumbers = true;
-
-  let keyboardElement;
-  let isMouseDown = false;
-  let activeKeys = new Map(); // Map of MIDI note -> element
+  let keyboardElement = $state();
+  let isMouseDown = $state(false);
+  let activeKeys = $state(new Map()); // Map of MIDI note -> element
   let keyboardMapping = createKeyboardMapping();
 
   // Musical note names (C to B)
@@ -258,12 +254,12 @@
         class:white-key={!isBlack}
         class:black-key={isBlack}
         data-note={midiNote}
-        on:mousedown={handleKeyDown}
-        on:mouseup={handleKeyUp}
-        on:mouseleave={handleMouseLeave}
-        on:mouseenter={handleMouseEnter}
-        on:touchstart={handleKeyDown}
-        on:touchend={handleKeyUp}
+        onmousedown={handleKeyDown}
+        onmouseup={handleKeyUp}
+        onmouseleave={handleMouseLeave}
+        onmouseenter={handleMouseEnter}
+        ontouchstart={handleKeyDown}
+        ontouchend={handleKeyUp}
         title={`${noteLabel} (MIDI ${midiNote})`}
         aria-label="Piano key {noteLabel}"
       >

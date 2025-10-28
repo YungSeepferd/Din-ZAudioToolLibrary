@@ -27,17 +27,19 @@
     setCurrentPresetId
   } from '$stores/presets.js';
 
-  /** @type {Object} Audio state instance */
-  export let audioState = undefined;
+  /**
+   * Component props using Svelte 5 $props()
+   */
+  let { audioState = undefined } = $props();
 
-  let allPresets = [];
-  let currentPresetId = null;
-  let showSaveDialog = false;
-  let showImportDialog = false;
-  let newPresetName = '';
-  let newPresetDescription = '';
-  let importData = '';
-  let filterText = '';
+  let allPresets = $state([]);
+  let currentPresetId = $state(null);
+  let showSaveDialog = $state(false);
+  let showImportDialog = $state(false);
+  let newPresetName = $state('');
+  let newPresetDescription = $state('');
+  let importData = $state('');
+  let filterText = $state('');
 
   onMount(() => {
     loadPresets();
@@ -182,10 +184,10 @@
     <h3 class="browser-title">📚 Presets</h3>
 
     <div class="header-actions">
-      <button class="action-btn" on:click={openSaveDialog}>
+      <button class="action-btn" onclick={openSaveDialog}>
         💾 Save
       </button>
-      <button class="action-btn" on:click={() => (showImportDialog = true)}>
+      <button class="action-btn" onclick={() => (showImportDialog = true)}>
         📥 Import
       </button>
     </div>
@@ -211,7 +213,7 @@
       >
         <button
           class="preset-button"
-          on:click={() => handlePresetClick(preset)}
+          onclick={() => handlePresetClick(preset)}
         >
           <div class="preset-info">
             <span class="preset-name">{preset.name}</span>
@@ -232,7 +234,7 @@
         <div class="preset-actions">
           <button
             class="icon-btn"
-            on:click={() => handleExportPreset(preset)}
+            onclick={() => handleExportPreset(preset)}
             title="Export preset"
           >
             📤
@@ -240,7 +242,7 @@
           {#if !preset.isFactory}
             <button
               class="icon-btn delete"
-              on:click={() => handleDeletePreset(preset)}
+              onclick={() => handleDeletePreset(preset)}
               title="Delete preset"
             >
               🗑️
@@ -254,7 +256,7 @@
       <div class="empty-state">
         <p>No presets found</p>
         {#if filterText}
-          <button class="link-btn" on:click={() => (filterText = '')}>
+          <button class="link-btn" onclick={() => (filterText = '')}>
             Clear search
           </button>
         {/if}
@@ -265,8 +267,8 @@
 
 <!-- Save Preset Dialog -->
 {#if showSaveDialog}
-  <div class="dialog-overlay" on:click={() => (showSaveDialog = false)}>
-    <div class="dialog" on:click|stopPropagation>
+  <div class="dialog-overlay" onclick={() => (showSaveDialog = false)}>
+    <div class="dialog" onclick={(e) => e.stopPropagation()}>
       <h3>💾 Save Preset</h3>
 
       <div class="form-group">
@@ -292,10 +294,10 @@
       </div>
 
       <div class="dialog-actions">
-        <button class="btn btn-secondary" on:click={() => (showSaveDialog = false)}>
+        <button class="btn btn-secondary" onclick={() => (showSaveDialog = false)}>
           Cancel
         </button>
-        <button class="btn btn-primary" on:click={handleSavePreset}>
+        <button class="btn btn-primary" onclick={handleSavePreset}>
           Save
         </button>
       </div>
@@ -305,8 +307,8 @@
 
 <!-- Import Preset Dialog -->
 {#if showImportDialog}
-  <div class="dialog-overlay" on:click={() => (showImportDialog = false)}>
-    <div class="dialog" on:click|stopPropagation>
+  <div class="dialog-overlay" onclick={() => (showImportDialog = false)}>
+    <div class="dialog" onclick={(e) => e.stopPropagation()}>
       <h3>📥 Import Preset</h3>
 
       <div class="form-group">
@@ -321,10 +323,10 @@
       </div>
 
       <div class="dialog-actions">
-        <button class="btn btn-secondary" on:click={() => (showImportDialog = false)}>
+        <button class="btn btn-secondary" onclick={() => (showImportDialog = false)}>
           Cancel
         </button>
-        <button class="btn btn-primary" on:click={handleImportPreset}>
+        <button class="btn btn-primary" onclick={handleImportPreset}>
           Import
         </button>
       </div>
