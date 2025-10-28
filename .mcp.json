@@ -1,89 +1,51 @@
 {
   "mcpServers": {
     "svelte": {
-      "command": "npx",
-      "args": ["-y", "@sveltejs/mcp"],
-      "description": "Svelte 5 UI framework documentation and API reference",
-      "enabled": true
-    },
-    "web-audio": {
-      "command": "node",
-      "args": ["${PROJECT_ROOT}/tools/mcp-servers/web-audio-mcp.js"],
-      "description": "Web Audio API documentation, nodes, patterns, and examples",
-      "enabled": true
+      "type": "http",
+      "url": "https://mcp.svelte.dev/mcp",
+      "description": "Svelte 5 docs via hosted remote MCP endpoint",
+      "enabled": true,
+      "notes": "Remote server recommended by Svelte docs"
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@github/github-mcp-server"],
-      "description": "GitHub repository browsing, code search, issue/PR management, commit analysis",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "description": "GitHub repository browsing, code search, issue/PR management",
+      "enabled": true,
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
-      },
-      "enabled": false,
-      "notes": "Requires: export GITHUB_TOKEN=your_token"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PAT:-}"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Structured multi-step reasoning assistant",
+      "enabled": true
+    },
+    "quillopy": {
+      "command": "npx",
+      "args": ["-y", "@quillopy/mcp"],
+      "description": "On-demand up-to-date documentation for various libraries",
+      "enabled": true
     },
     "nodejs-docs": {
       "command": "npx",
-      "args": ["-y", "@docs-mcp/nodejs"],
+      "args": ["-y", "@modelcontextprotocol/server-nodejs-docs"],
       "description": "Node.js official documentation and API reference",
+      "enabled": false,
+      "notes": "Package unavailable on npm; enable after publishing or swap in alternate server"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "description": "Browser automation via Playwright",
       "enabled": true
     },
-    "code-analysis": {
+    "mcp-compass": {
       "command": "npx",
-      "args": ["-y", "code-analysis-mcp"],
-      "description": "Code analysis, static analysis, refactoring suggestions, code review",
-      "enabled": false,
-      "notes": "Optional: for advanced code analysis capabilities"
-    },
-    "git": {
-      "command": "npx",
-      "args": ["-y", "git-mcp"],
-      "description": "Git operations, commit analysis, branch management, diff viewing",
-      "enabled": true,
-      "notes": "Works within your project repository"
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "fs-mcp"],
-      "description": "Safe filesystem operations, file reading, directory browsing",
+      "args": ["-y", "@liuyoshio/mcp-compass"],
+      "description": "Discover and recommend MCP servers by description",
       "enabled": true
-    },
-    "bash": {
-      "command": "npx",
-      "args": ["-y", "bash-mcp"],
-      "description": "Execute bash commands safely in project context",
-      "enabled": true,
-      "notes": "Use with caution - limited to project directory"
-    },
-    "npm-registry": {
-      "command": "npx",
-      "args": ["-y", "@npm-mcp/npm"],
-      "description": "NPM package search, version info, documentation, vulnerability checks",
-      "enabled": true
-    },
-    "eslint": {
-      "command": "npx",
-      "args": ["-y", "eslint-mcp"],
-      "description": "ESLint configuration, linting rules, style guide reference",
-      "enabled": false,
-      "notes": "Optional: for direct linting integration"
-    },
-    "prettier": {
-      "command": "npx",
-      "args": ["-y", "prettier-mcp"],
-      "description": "Prettier code formatting rules and configuration",
-      "enabled": false,
-      "notes": "Optional: for code formatting integration"
     }
-  },
-  "environment": {
-    "PROJECT_ROOT": "${PWD}",
-    "NODE_ENV": "development"
-  },
-  "settings": {
-    "maxOutputTokens": 15000,
-    "timeout": 30000,
-    "retryAttempts": 3
-  },
-  "documentation": "See tools/mcp-servers/MCP_SETUP_GUIDE.md for detailed setup instructions"
+  }
 }

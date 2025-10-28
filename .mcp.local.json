@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "github": {
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PAT}"
+      }
+    },
+    "quillopy": {
+      "env": {
+        "QUILLOPY_API_KEY": "${QUILLOPY_API_KEY}"
+      }
+    }
+  }
+}

@@ -14,36 +14,87 @@ This file provides essential context for Claude Code instances working on the Au
 
 ```
 /
-├── plugins/                    # Individual plugin projects
-│   ├── _template/web/         # Template for new plugins
-│   └── [plugin-name]/web/     # Actual plugin projects
-├── shared/                     # Reusable libraries
-│   ├── audio-core/            # Web Audio DSP utilities
-│   │   ├── synthesis/         # Oscillators, envelopes
-│   │   ├── filters/           # Low-pass, high-pass, etc.
-│   │   ├── effects/           # Delay, reverb, etc.
-│   │   └── utils/             # AudioContext, scheduling
-│   └── ui-components/         # Svelte 5 reusable components
-│       └── controls/          # Knob, Slider, Button
-├── docs/                       # Complete documentation
-│   ├── GETTING_STARTED.md
-│   ├── ARCHITECTURE.md
-│   ├── PLUGIN_DEVELOPMENT.md
-│   ├── LEARNING_PATH.md
-│   ├── CODE_QUALITY_GUIDE.md
-│   ├── FRAMEWORKS_AND_TOOLS.md
-│   └── research/
-├── tools/
-│   ├── mcp-servers/           # MCP server configurations
-│   │   ├── .mcp.json
+├── plugins/                           # Individual plugin projects
+│   ├── _template/web/               # Template for new plugins
+│   └── [plugin-name]/web/           # Actual plugin projects
+│
+├── shared/                           # Reusable libraries
+│   ├── audio-core/                  # Web Audio DSP utilities
+│   │   ├── synthesis/               # Oscillators, envelopes
+│   │   ├── filters/                 # Low-pass, high-pass, etc.
+│   │   ├── effects/                 # Delay, reverb, etc.
+│   │   └── utils/                   # AudioContext, scheduling
+│   └── ui-components/               # Svelte 5 reusable components
+│       └── controls/                # Knob, Slider, Button
+│
+├── docs/                            # Complete documentation
+│   ├── GETTING_STARTED.md           # Initial setup guide
+│   ├── ARCHITECTURE.md              # Project architecture overview
+│   ├── PLUGIN_DEVELOPMENT.md        # Plugin development guide
+│   ├── LEARNING_PATH.md             # 6-phase curriculum
+│   ├── CODE_QUALITY_GUIDE.md        # Code standards
+│   ├── FRAMEWORKS_AND_TOOLS.md      # Framework reference
+│   ├── research/                    # Research and exploration
+│   └── projects/                    # Project-specific documentation
+│       └── lofi-piano/              # Example: LoFi Piano plugin docs
+│           ├── README.md            # Project entry point
+│           ├── QUICK_START.md       # 5-minute orientation
+│           ├── ROADMAP.md           # 12-week development plan
+│           ├── PROJECT_SUMMARY.md   # What was created
+│           ├── SENIOR_DEVELOPER_NOTES.md
+│           └── DOCUMENTATION_INDEX.md
+│
+├── tools/                           # Development tools & configurations
+│   ├── mcp-servers/                # MCP server configurations
+│   │   ├── .mcp.json              # MCP servers manifest
 │   │   ├── CLAUDE_CODE_MCP_SETUP.md
 │   │   └── web-audio-mcp.js
 │   └── prompts/
 │       └── CLAUDE_CODE_ROUTINE_PROMPTS.md
-├── .mcp.json                  # Project MCP configuration
-├── CLAUDE_CODE_QUICK_START.md # 5-minute Claude Code setup
-└── pnpm-workspace.yaml        # PNPM workspace definition
+│
+├── .mcp.json                       # Project MCP configuration
+├── CLAUDE.md                       # Project context for Claude Code
+├── CLAUDE_CODE_QUICK_START.md      # 5-minute Claude Code setup
+└── pnpm-workspace.yaml            # PNPM workspace definition
 ```
+
+### Repository Structure Principles
+
+**Cleanliness & Organization Matter**. This monorepo follows strict organizational rules:
+
+1. **Root Directory is Sacred**
+   - Only essential project files at root (`.mcp.json`, `CLAUDE.md`, package files)
+   - No feature documentation in root
+   - Keep root clean for quick navigation
+
+2. **Project Documentation Goes in `docs/projects/[project-name]/`**
+   - Each project gets its own documentation folder
+   - Example: `docs/projects/lofi-piano/` for LoFi Piano plugin docs
+   - This prevents root directory bloat
+   - Makes it easy to add new projects without clutter
+
+3. **Core Documentation Lives in `docs/`**
+   - General guides: `GETTING_STARTED.md`, `LEARNING_PATH.md`, `CODE_QUALITY_GUIDE.md`
+   - Framework info: `FRAMEWORKS_AND_TOOLS.md`
+   - Architecture: `ARCHITECTURE.md`
+   - Project-specific docs: `docs/projects/[project-name]/`
+
+4. **Shared Code is Sacred**
+   - `shared/` contains only reusable, tested components
+   - Plugins depend on `shared/`, never vice versa
+   - No circular dependencies
+
+5. **Each Plugin is Isolated**
+   - `plugins/[plugin-name]/web/` is independently deployable
+   - Each plugin has its own `src/`, `package.json`, `README.md`
+   - All plugins share `shared/` dependencies
+
+6. **Tools & Configuration**
+   - `tools/` contains development tools and MCP configurations
+   - `tools/mcp-servers/` manages Claude Code integrations
+   - Clear separation from code and documentation
+
+**Golden Rule**: *If a file isn't essential for understanding the whole project, it goes in a subdirectory.*
 
 ### Key Monorepo Concepts
 

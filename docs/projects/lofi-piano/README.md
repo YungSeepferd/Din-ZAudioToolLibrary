@@ -7,22 +7,22 @@ Welcome! This directory contains everything you need to build a professional nos
 ## 📍 Start Here
 
 ### 1. **First Time? Read This** (5 minutes)
-👉 [`LOFI_PIANO_QUICK_START.md`](./docs/LOFI_PIANO_QUICK_START.md)
+👉 [`QUICK_START.md`](./QUICK_START.md)
 
 Quick overview of what you're building, how to get started, and basic concepts.
 
 ### 2. **Planning Phase** (30 minutes)
-👉 [`LOFI_PIANO_ROADMAP.md`](./docs/LOFI_PIANO_ROADMAP.md)
+👉 [`ROADMAP.md`](./ROADMAP.md)
 
 Complete 12-week development plan with 6 phases and 12 sprints. See what you'll build each week.
 
 ### 3. **Deep Dive** (45 minutes)
-👉 [`SENIOR_DEVELOPER_NOTES.md`](./docs/SENIOR_DEVELOPER_NOTES.md)
+👉 [`SENIOR_DEVELOPER_NOTES.md`](./SENIOR_DEVELOPER_NOTES.md)
 
 Strategic guidance from a senior audio engineer. Understand *why* architectural decisions matter.
 
 ### 4. **Full Project Summary** (10 minutes)
-👉 [`LOFI_PIANO_PROJECT_SUMMARY.md`](./LOFI_PIANO_PROJECT_SUMMARY.md)
+👉 [`PROJECT_SUMMARY.md`](./PROJECT_SUMMARY.md)
 
 Overview of everything created for this project and completion checklist.
 
@@ -156,7 +156,7 @@ pnpm dev
 
 ### Week 1 Tasks
 
-See [`LOFI_PIANO_ROADMAP.md`](./docs/LOFI_PIANO_ROADMAP.md), Phase 1, Sprint 1.1 for detailed tasks:
+See [`ROADMAP.md`](./ROADMAP.md), Phase 1, Sprint 1.1 for detailed tasks:
 
 1. Study `plugins/_template/web/` example
 2. Create `src/audio/piano-voice.js`
@@ -203,13 +203,13 @@ See [`CLAUDE.md`](./CLAUDE.md) for complete reference.
 
 | Document | Purpose | Time |
 |----------|---------|------|
-| [`LOFI_PIANO_QUICK_START.md`](./docs/LOFI_PIANO_QUICK_START.md) | 5-minute orientation | 5 min |
-| [`LOFI_PIANO_ROADMAP.md`](./docs/LOFI_PIANO_ROADMAP.md) | 12-week plan with sprints | 30 min |
-| [`SENIOR_DEVELOPER_NOTES.md`](./docs/SENIOR_DEVELOPER_NOTES.md) | Architecture & strategy | 45 min |
-| [`CLAUDE.md`](./CLAUDE.md) | Project context & tools | 20 min |
-| [`LEARNING_PATH.md`](./docs/LEARNING_PATH.md) | Full 6-phase curriculum | 40 min |
-| [`PLUGIN_DEVELOPMENT.md`](./docs/PLUGIN_DEVELOPMENT.md) | Detailed plugin guide | 60 min |
-| [`CODE_QUALITY_GUIDE.md`](./docs/CODE_QUALITY_GUIDE.md) | Code standards | 40 min |
+| [`QUICK_START.md`](./QUICK_START.md) | 5-minute orientation | 5 min |
+| [`ROADMAP.md`](./ROADMAP.md) | 12-week plan with sprints | 30 min |
+| [`SENIOR_DEVELOPER_NOTES.md`](./SENIOR_DEVELOPER_NOTES.md) | Architecture & strategy | 45 min |
+| [`../../CLAUDE.md`](../../CLAUDE.md) | Project context & tools | 20 min |
+| [`../LEARNING_PATH.md`](../LEARNING_PATH.md) | Full 6-phase curriculum | 40 min |
+| [`../PLUGIN_DEVELOPMENT.md`](../PLUGIN_DEVELOPMENT.md) | Detailed plugin guide | 60 min |
+| [`../CODE_QUALITY_GUIDE.md`](../CODE_QUALITY_GUIDE.md) | Code standards | 40 min |
 
 ---
 
