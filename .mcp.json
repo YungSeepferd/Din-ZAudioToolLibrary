@@ -1,0 +1,89 @@
+{
+  "mcpServers": {
+    "svelte": {
+      "command": "npx",
+      "args": ["-y", "@sveltejs/mcp"],
+      "description": "Svelte 5 UI framework documentation and API reference",
+      "enabled": true
+    },
+    "web-audio": {
+      "command": "node",
+      "args": ["${PROJECT_ROOT}/tools/mcp-servers/web-audio-mcp.js"],
+      "description": "Web Audio API documentation, nodes, patterns, and examples",
+      "enabled": true
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@github/github-mcp-server"],
+      "description": "GitHub repository browsing, code search, issue/PR management, commit analysis",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "enabled": false,
+      "notes": "Requires: export GITHUB_TOKEN=your_token"
+    },
+    "nodejs-docs": {
+      "command": "npx",
+      "args": ["-y", "@docs-mcp/nodejs"],
+      "description": "Node.js official documentation and API reference",
+      "enabled": true
+    },
+    "code-analysis": {
+      "command": "npx",
+      "args": ["-y", "code-analysis-mcp"],
+      "description": "Code analysis, static analysis, refactoring suggestions, code review",
+      "enabled": false,
+      "notes": "Optional: for advanced code analysis capabilities"
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "git-mcp"],
+      "description": "Git operations, commit analysis, branch management, diff viewing",
+      "enabled": true,
+      "notes": "Works within your project repository"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "fs-mcp"],
+      "description": "Safe filesystem operations, file reading, directory browsing",
+      "enabled": true
+    },
+    "bash": {
+      "command": "npx",
+      "args": ["-y", "bash-mcp"],
+      "description": "Execute bash commands safely in project context",
+      "enabled": true,
+      "notes": "Use with caution - limited to project directory"
+    },
+    "npm-registry": {
+      "command": "npx",
+      "args": ["-y", "@npm-mcp/npm"],
+      "description": "NPM package search, version info, documentation, vulnerability checks",
+      "enabled": true
+    },
+    "eslint": {
+      "command": "npx",
+      "args": ["-y", "eslint-mcp"],
+      "description": "ESLint configuration, linting rules, style guide reference",
+      "enabled": false,
+      "notes": "Optional: for direct linting integration"
+    },
+    "prettier": {
+      "command": "npx",
+      "args": ["-y", "prettier-mcp"],
+      "description": "Prettier code formatting rules and configuration",
+      "enabled": false,
+      "notes": "Optional: for code formatting integration"
+    }
+  },
+  "environment": {
+    "PROJECT_ROOT": "${PWD}",
+    "NODE_ENV": "development"
+  },
+  "settings": {
+    "maxOutputTokens": 15000,
+    "timeout": 30000,
+    "retryAttempts": 3
+  },
+  "documentation": "See tools/mcp-servers/MCP_SETUP_GUIDE.md for detailed setup instructions"
+}
