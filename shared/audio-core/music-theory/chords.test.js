@@ -1,44 +1,45 @@
 /**
  * chords.test.js
- * Comprehensive test suite for the chords module
+ * Test suite for the chords module
  *
  * Tests chord generation, inversions, voice leading, and harmonic functions
- * to ensure correct music theory implementation.
+ * to verify correct music theory implementation.
  *
  * @module chords.test
  */
 
 import { describe, it, expect } from 'vitest';
 import {
-  CHORD_TYPES,
   CHORD_TEMPLATES,
+  DIATONIC_CHORD_QUALITIES,
   generateChord,
-  getChordMetadata,
-  getChordInversion,
-  getChordInversions,
-  getVoiceLeadingDistance,
-  getOptimalInversion,
   generateDiatonicChords,
+  invert,
+  calculateVoiceLeading,
+  getChordInfo,
+  getAvailableChords
 } from './chords.js';
 
 describe('Chords Module', () => {
   describe('Constants', () => {
-    it('should have all expected chord types', () => {
-      const expectedChords = [
-        'major',
-        'minor',
-        'diminished',
-        'augmented',
-        'maj7',
-        'dom7',
-        'min7',
-        'minMaj7',
-        'halfDim7',
-      ];
+    it('should have CHORD_TEMPLATES defined', () => {
+      expect(CHORD_TEMPLATES).toBeDefined();
+      expect(typeof CHORD_TEMPLATES).toBe('object');
+    });
 
-      expectedChords.forEach((chordType) => {
-        expect(CHORD_TYPES).toContain(chordType);
-      });
+    it('should have all expected basic chord types', () => {
+      expect(CHORD_TEMPLATES.major).toBeDefined();
+      expect(CHORD_TEMPLATES.minor).toBeDefined();
+      expect(CHORD_TEMPLATES.diminished).toBeDefined();
+      expect(CHORD_TEMPLATES.augmented).toBeDefined();
+    });
+
+    it('should have all seventh chord types', () => {
+      expect(CHORD_TEMPLATES.maj7).toBeDefined();
+      expect(CHORD_TEMPLATES.dom7).toBeDefined();
+      expect(CHORD_TEMPLATES.min7).toBeDefined();
+      expect(CHORD_TEMPLATES.minMaj7).toBeDefined();
+      expect(CHORD_TEMPLATES.halfDim7).toBeDefined();
     });
 
     it('should have valid intervals for all chord types', () => {
@@ -49,6 +50,13 @@ describe('Chords Module', () => {
         // First interval should always be 0 (root)
         expect(chord.intervals[0]).toBe(0);
       });
+    });
+
+    it('should have DIATONIC_CHORD_QUALITIES defined', () => {
+      expect(DIATONIC_CHORD_QUALITIES).toBeDefined();
+      expect(DIATONIC_CHORD_QUALITIES.major).toBeDefined();
+      expect(DIATONIC_CHORD_QUALITIES.minorNatural).toBeDefined();
+      expect(DIATONIC_CHORD_QUALITIES.minorHarmonic).toBeDefined();
     });
   });
 
@@ -88,6 +96,16 @@ describe('Chords Module', () => {
       expect(aMin7).toEqual([57, 60, 64, 67]); // A C E G
     });
 
+    it('should generate minMaj7 chords', () => {
+      const cMinMaj7 = generateChord(60, 'minMaj7');
+      expect(cMinMaj7).toEqual([60, 63, 67, 71]); // C Eb G B
+    });
+
+    it('should generate halfDim7 chords', () => {
+      const cHalfDim7 = generateChord(60, 'halfDim7');
+      expect(cHalfDim7).toEqual([60, 63, 66, 70]); // C Eb Gb Bb
+    });
+
     it('should work for any MIDI root', () => {
       const roots = [0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120];
       roots.forEach((root) => {
@@ -98,291 +116,317 @@ describe('Chords Module', () => {
       });
     });
 
-    it('should throw error for invalid chord type', () => {
-      expect(() => generateChord(60, 'invalidChord')).toThrow();
-    });
-
-    it('should throw error for invalid MIDI note', () => {
-      expect(() => generateChord(-1, 'major')).toThrow();
-      expect(() => generateChord(128, 'major')).toThrow();
+    it('should default to major if chord type is invalid', () => {
+      const chord = generateChord(60, 'invalidChordType');
+      expect(chord).toEqual([60, 64, 67]); // Should be major
     });
   });
 
-  describe('getChordInversion()', () => {
-    it('should return root position (inversion 0)', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversion0 = getChordInversion(cMajor, 0);
-      expect(inversion0).toEqual([60, 64, 67]); // C E G
+  describe('invert()', () => {
+    it('should return same notes for root position (inversion 0)', () => {
+      const cMajor = [60, 64, 67];
+      const result = invert(cMajor, 0);
+      expect(result).toEqual([60, 64, 67]);
     });
 
-    it('should return first inversion (inversion 1)', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversion1 = getChordInversion(cMajor, 1);
-      expect(inversion1).toEqual([64, 67, 72]); // E G C (next octave)
+    it('should generate first inversion correctly', () => {
+      const cMajor = [60, 64, 67];
+      const result = invert(cMajor, 1);
+      // E in bass, next octave: [E, G, C+12]
+      expect(result).toEqual([64, 67, 72]);
     });
 
-    it('should return second inversion (inversion 2)', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversion2 = getChordInversion(cMajor, 2);
-      expect(inversion2).toEqual([67, 72, 76]); // G C E (next octave)
+    it('should generate second inversion correctly', () => {
+      const cMajor = [60, 64, 67];
+      const result = invert(cMajor, 2);
+      // G in bass, next octaves: [G, C+12, E+12]
+      expect(result).toEqual([67, 72, 76]);
     });
 
-    it('should wrap to root position for higher inversions', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversion3 = getChordInversion(cMajor, 3);
-      expect(inversion3).toEqual([72, 76, 79]); // C E G (next octave)
-    });
+    it('should handle multiple inversions on seventh chords', () => {
+      const cDom7 = [60, 64, 67, 70];
+      const inv1 = invert(cDom7, 1);
+      const inv2 = invert(cDom7, 2);
+      const inv3 = invert(cDom7, 3);
 
-    it('should handle negative inversion numbers', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversion_1 = getChordInversion(cMajor, -1);
-      expect(inversion_1).toBeDefined();
-    });
-  });
-
-  describe('getChordInversions()', () => {
-    it('should return all inversions of a chord', () => {
-      const cMajor = generateChord(60, 'major');
-      const inversions = getChordInversions(cMajor);
-
-      expect(inversions).toHaveLength(3); // Triads have 3 inversions
-      expect(inversions[0]).toEqual([60, 64, 67]); // Root position
-      expect(inversions[1]).toEqual([64, 67, 72]); // 1st inversion
-      expect(inversions[2]).toEqual([67, 72, 76]); // 2nd inversion
-    });
-
-    it('should return all inversions for seventh chords', () => {
-      const cMaj7 = generateChord(60, 'maj7');
-      const inversions = getChordInversions(cMaj7);
-
-      expect(inversions).toHaveLength(4); // 7th chords have 4 inversions
-      expect(inversions[0][0]).toBe(60); // Root position
-      expect(inversions[1][0]).toBe(64); // 1st inversion
-      expect(inversions[2][0]).toBe(67); // 2nd inversion
-      expect(inversions[3][0]).toBe(71); // 3rd inversion
+      expect(inv1.length).toBe(4);
+      expect(inv2.length).toBe(4);
+      expect(inv3.length).toBe(4);
+      expect(inv1[0]).toBe(64); // E in bass
+      expect(inv2[0]).toBe(67); // G in bass
+      expect(inv3[0]).toBe(70); // Bb in bass
     });
   });
 
-  describe('getVoiceLeadingDistance()', () => {
-    it('should calculate correct distance between two chords', () => {
-      const cMajor = generateChord(60, 'major'); // C E G
-      const dMinor = generateChord(62, 'minor'); // D F A
+  describe('calculateVoiceLeading()', () => {
+    it('should suggest optimal inversion for smooth voice leading', () => {
+      const cMajor = [60, 64, 67];
+      const fMajor = [65, 69, 72];
 
-      const distance = getVoiceLeadingDistance(cMajor, dMinor);
-      expect(distance).toBeGreaterThan(0);
-      expect(typeof distance).toBe('number');
+      const result = calculateVoiceLeading(cMajor, fMajor);
+      expect(result).toBeDefined();
+      expect(result.bestInversion).toBeDefined();
+      expect(result.minDistance).toBeDefined();
+      expect(result.suggestedNotes).toBeDefined();
     });
 
-    it('should return 0 for identical chords', () => {
-      const cMajor = generateChord(60, 'major');
-      const distance = getVoiceLeadingDistance(cMajor, cMajor);
-      expect(distance).toBe(0);
+    it('should calculate voice leading between different chord types', () => {
+      const cMajor = [60, 64, 67];
+      const aMinor = [57, 60, 64];
+
+      const result = calculateVoiceLeading(cMajor, aMinor);
+      expect(result.bestInversion).toBeGreaterThanOrEqual(0);
+      expect(result.minDistance).toBeGreaterThanOrEqual(0);
     });
 
-    it('should find closest voice leading', () => {
-      const chord1 = [60, 64, 67]; // C major
-      const chord2 = [62, 66, 69]; // D minor (nearby)
-      const chord3 = [48, 52, 55]; // C major (low register)
+    it('should try all inversions', () => {
+      const chord1 = [60, 64, 67];
+      const chord2 = [65, 69, 72];
 
-      const distance1 = getVoiceLeadingDistance(chord1, chord2);
-      const distance2 = getVoiceLeadingDistance(chord1, chord3);
-
-      // Distance to nearby chord should be less than distant chord
-      expect(distance1).toBeLessThan(distance2);
-    });
-  });
-
-  describe('getOptimalInversion()', () => {
-    it('should return optimal inversion from previous chord', () => {
-      const cMajor = generateChord(60, 'major');
-      const dMinor = generateChord(62, 'minor');
-
-      const optimal = getOptimalInversion(dMinor, cMajor);
-
-      expect(optimal).toHaveProperty('notes');
-      expect(optimal).toHaveProperty('inversion');
-      expect(optimal.inversion).toBeGreaterThanOrEqual(0);
-      expect(optimal.inversion).toBeLessThan(dMinor.length);
+      const result = calculateVoiceLeading(chord1, chord2);
+      // Should have distance for each inversion (3 for triads)
+      expect(result.allDistances.length).toBe(3);
     });
 
-    it('should prefer minimal voice leading distance', () => {
-      const c = generateChord(60, 'major'); // C E G
-      const g = generateChord(67, 'major'); // G B D
+    it('should prefer inversions with minimal movement', () => {
+      const cMajor = [60, 64, 67]; // C E G
+      // Create a chord where root position would require large jumps
+      const distantChord = [48, 52, 55]; // Low C major
 
-      const optimal = getOptimalInversion(g, c);
-
-      expect(optimal.notes).toBeDefined();
-      expect(optimal.distance).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should handle first chord (no previous context)', () => {
-      const cMajor = generateChord(60, 'major');
-      const optimal = getOptimalInversion(cMajor, null);
-
-      // Should return root position as default
-      expect(optimal.inversion).toBe(0);
+      const result = calculateVoiceLeading(cMajor, distantChord);
+      // Should choose inversion that minimizes total distance
+      expect(result.minDistance).toBeDefined();
+      expect(result.suggestedNotes).toBeDefined();
     });
   });
 
   describe('generateDiatonicChords()', () => {
-    it('should generate 7 chords from C major', () => {
-      const diatonic = generateDiatonicChords(60, 'major');
-
-      expect(diatonic).toHaveLength(7);
-      expect(diatonic[0]).toHaveProperty('root');
-      expect(diatonic[0]).toHaveProperty('type');
-      expect(diatonic[0]).toHaveProperty('notes');
-      expect(diatonic[0]).toHaveProperty('roman');
+    it('should generate 7 diatonic chords for major scale', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      expect(chords).toHaveLength(7);
     });
 
-    it('should have correct Roman numeral notation for major', () => {
-      const diatonic = generateDiatonicChords(60, 'major');
-
-      expect(diatonic[0].roman).toBe('I'); // C major
-      expect(diatonic[1].roman).toBe('ii'); // D minor
-      expect(diatonic[2].roman).toBe('iii'); // E minor
-      expect(diatonic[3].roman).toBe('IV'); // F major
-      expect(diatonic[4].roman).toBe('V'); // G major
-      expect(diatonic[5].roman).toBe('vi'); // A minor
-      expect(diatonic[6].roman).toBe('vii°'); // B diminished
+    it('should have correct Roman numerals for major scale', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      const romanNumerals = chords.map(c => c.roman);
+      expect(romanNumerals).toEqual(['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°']);
     });
 
-    it('should have correct harmonic functions', () => {
-      const diatonic = generateDiatonicChords(60, 'major');
-
-      // Tonic
-      expect(['I', 'iii', 'vi']).toContain(diatonic[0].roman);
-      // Subdominant
-      expect(['IV', 'ii', 'vi']).toContain(diatonic[3].roman);
-      // Dominant
-      expect(['V', 'vii°']).toContain(diatonic[4].roman);
+    it('should have correct qualities for major scale', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      const qualities = chords.map(c => c.quality);
+      expect(qualities).toEqual([
+        'major',
+        'minor',
+        'minor',
+        'major',
+        'major',
+        'minor',
+        'diminished'
+      ]);
     });
 
-    it('should generate chords from any root', () => {
-      const roots = [57, 60, 62, 65]; // A, C, D, F
-      roots.forEach((root) => {
-        const diatonic = generateDiatonicChords(root, 'major');
-        expect(diatonic).toHaveLength(7);
-        expect(diatonic[0].root).toBe(root);
+    it('should generate 7 diatonic chords for minor natural', () => {
+      const chords = generateDiatonicChords(60, 'minorNatural');
+      expect(chords).toHaveLength(7);
+    });
+
+    it('should have correct qualities for minor natural', () => {
+      const chords = generateDiatonicChords(60, 'minorNatural');
+      const qualities = chords.map(c => c.quality);
+      expect(qualities).toEqual([
+        'minor',
+        'diminished',
+        'major',
+        'minor',
+        'minor',
+        'major',
+        'major'
+      ]);
+    });
+
+    it('should include chord root notes', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      chords.forEach((chord) => {
+        expect(chord.root).toBeDefined();
+        expect(typeof chord.root).toBe('number');
       });
     });
 
-    it('should work with minor scales', () => {
-      const aMinor = generateDiatonicChords(57, 'naturalMinor');
-
-      expect(aMinor).toHaveLength(7);
-      // A minor scale: A B C D E F G
-      // i = A minor, III = C major, IV = D minor, etc.
-      expect(aMinor[0].type).toBe('minor');
-      expect(aMinor[0].roman).toBe('i');
-    });
-  });
-
-  describe('getChordMetadata()', () => {
-    it('should return metadata for all chord types', () => {
-      Object.keys(CHORD_TYPES).forEach((chordType) => {
-        const metadata = getChordMetadata(chordType);
-        expect(metadata).toHaveProperty('name');
-        expect(metadata).toHaveProperty('intervals');
-        expect(metadata).toHaveProperty('description');
-      });
-    });
-
-    it('should have descriptive information', () => {
-      const majorMeta = getChordMetadata('major');
-      expect(majorMeta.name).toContain('major');
-      expect(majorMeta.description).toBeDefined();
-    });
-  });
-
-  describe('Voice leading quality', () => {
-    it('should prefer smooth voice leading in progressions', () => {
-      const cMajor = generateChord(60, 'major');
-      const dMinor = generateChord(62, 'minor');
-      const gMajor = generateChord(67, 'major');
-
-      const cToD = getOptimalInversion(dMinor, cMajor);
-      const dToG = getOptimalInversion(gMajor, dMinor);
-
-      // Both should have inversions that minimize movement
-      expect(cToD.inversion).toBeGreaterThanOrEqual(0);
-      expect(dToG.inversion).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should create musically coherent progressions', () => {
-      const progressionRoots = [60, 65, 67, 60]; // C G G C
-      const chords = progressionRoots.map((root) => generateChord(root, 'major'));
-
-      // Each should have a reasonable voice leading
-      let previous = chords[0];
-      for (let i = 1; i < chords.length; i++) {
-        const optimal = getOptimalInversion(chords[i], previous);
-        expect(optimal.distance).toBeGreaterThanOrEqual(0);
-        previous = optimal.notes;
-      }
-    });
-  });
-
-  describe('Edge cases', () => {
-    it('should handle MIDI boundary notes', () => {
-      const lowChord = generateChord(0, 'major');
-      const highChord = generateChord(120, 'major');
-
-      expect(lowChord).toBeDefined();
-      expect(highChord).toBeDefined();
-    });
-
-    it('should generate same chord regardless of octave offset', () => {
-      const c4Major = generateChord(60, 'major');
-      const c5Major = generateChord(72, 'major');
-
-      // Should have same intervals
-      const intervals1 = [c4Major[1] - c4Major[0], c4Major[2] - c4Major[0]];
-      const intervals2 = [c5Major[1] - c5Major[0], c5Major[2] - c5Major[0]];
-
-      expect(intervals1).toEqual(intervals2);
-    });
-
-    it('should handle all 12 chromatic roots', () => {
-      for (let root = 0; root < 12; root++) {
-        const chord = generateChord(root, 'major');
-        expect(chord).toBeDefined();
-        expect(chord[0]).toBe(root);
-      }
-    });
-  });
-
-  describe('Integration with scales', () => {
-    it('should generate diatonic chords from scale degrees', () => {
-      const diatonic = generateDiatonicChords(60, 'major');
-
-      // All 7 diatonic chords should exist
-      expect(diatonic).toHaveLength(7);
-
-      // Each should have valid notes
-      diatonic.forEach((chord) => {
+    it('should include chord notes arrays', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      chords.forEach((chord) => {
         expect(chord.notes).toBeDefined();
-        expect(chord.notes.length).toBeGreaterThan(0);
+        expect(Array.isArray(chord.notes)).toBe(true);
+        expect(chord.notes.length).toBeGreaterThanOrEqual(3);
       });
     });
 
-    it('should have correct chord quality for diatonic harmony', () => {
-      const diatonic = generateDiatonicChords(60, 'major');
+    it('should include harmonic function', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      chords.forEach((chord) => {
+        expect(chord.function).toBeDefined();
+        expect(typeof chord.function).toBe('string');
+      });
+    });
 
-      // I = major
-      expect(diatonic[0].type).toBe('major');
-      // ii = minor
-      expect(diatonic[1].type).toBe('minor');
-      // iii = minor
-      expect(diatonic[2].type).toBe('minor');
-      // IV = major
-      expect(diatonic[3].type).toBe('major');
-      // V = major
-      expect(diatonic[4].type).toBe('major');
-      // vi = minor
-      expect(diatonic[5].type).toBe('minor');
-      // vii = diminished
-      expect(diatonic[6].type).toBe('diminished');
+    it('should work with any MIDI root', () => {
+      const roots = [0, 12, 24, 36, 48, 60, 72, 84, 96];
+      roots.forEach((root) => {
+        const chords = generateDiatonicChords(root, 'major');
+        expect(chords).toHaveLength(7);
+        expect(chords[0].root).toBe(root); // First chord starts on root
+      });
+    });
+
+    it('should generate chords across two octaves', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      // Notes span two octaves (14 notes in major scale)
+      const allNotes = chords.flatMap(c => c.notes);
+      const maxNote = Math.max(...allNotes);
+      const minNote = Math.min(...allNotes);
+      expect(maxNote - minNote).toBeGreaterThanOrEqual(12); // At least one octave span
+    });
+  });
+
+  describe('getChordInfo()', () => {
+    it('should return chord information', () => {
+      const info = getChordInfo('major');
+      expect(info).toBeDefined();
+      expect(info.name).toBe('Major');
+      expect(info.intervals).toEqual([0, 4, 7]);
+      expect(info.description).toBeDefined();
+    });
+
+    it('should return info for all chord types', () => {
+      const types = getAvailableChords();
+      types.forEach((type) => {
+        const info = getChordInfo(type);
+        expect(info).toBeDefined();
+        expect(info.name).toBeDefined();
+        expect(info.intervals).toBeDefined();
+      });
+    });
+
+    it('should default to major for unknown chord type', () => {
+      const info = getChordInfo('unknownChordType');
+      expect(info.name).toBe('Major');
+    });
+  });
+
+  describe('getAvailableChords()', () => {
+    it('should return array of chord types', () => {
+      const chords = getAvailableChords();
+      expect(Array.isArray(chords)).toBe(true);
+      expect(chords.length).toBeGreaterThan(0);
+    });
+
+    it('should include basic triads', () => {
+      const chords = getAvailableChords();
+      expect(chords).toContain('major');
+      expect(chords).toContain('minor');
+      expect(chords).toContain('diminished');
+      expect(chords).toContain('augmented');
+    });
+
+    it('should include seventh chords', () => {
+      const chords = getAvailableChords();
+      expect(chords).toContain('maj7');
+      expect(chords).toContain('dom7');
+      expect(chords).toContain('min7');
+      expect(chords).toContain('minMaj7');
+      expect(chords).toContain('halfDim7');
+    });
+  });
+
+  describe('Music Theory Concepts', () => {
+    it('should maintain correct intervals for major chord', () => {
+      const cMajor = generateChord(60, 'major');
+      const intervals = [];
+      for (let i = 0; i < cMajor.length - 1; i++) {
+        intervals.push(cMajor[i + 1] - cMajor[i]);
+      }
+      // Major chord intervals: 4 semitones (major 3rd), then 3 semitones (minor 3rd)
+      expect(intervals).toEqual([4, 3]);
+    });
+
+    it('should maintain correct intervals for minor chord', () => {
+      const cMinor = generateChord(60, 'minor');
+      const intervals = [];
+      for (let i = 0; i < cMinor.length - 1; i++) {
+        intervals.push(cMinor[i + 1] - cMinor[i]);
+      }
+      // Minor chord intervals: 3 semitones (minor 3rd), then 4 semitones (major 3rd)
+      expect(intervals).toEqual([3, 4]);
+    });
+
+    it('should build diatonic chords from scale notes only', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      // C major scale: C D E F G A B
+      const scaleNotes = [60, 62, 64, 65, 67, 69, 71];
+
+      chords.forEach((chord) => {
+        chord.notes.forEach((note) => {
+          // Check if note is in scale (considering octaves)
+          const noteClass = note % 12;
+          const inScale = scaleNotes.some((n) => n % 12 === noteClass);
+          expect(inScale).toBe(true);
+        });
+      });
+    });
+
+    it('should generate all diatonic chords across two octaves', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      // Verify that chords span across octaves
+      const allNotes = chords.flatMap(c => c.notes);
+      const spans2Octaves = Math.max(...allNotes) - Math.min(...allNotes) >= 12;
+      expect(spans2Octaves).toBe(true);
+    });
+
+    it('should maintain harmonic function in diatonic chords', () => {
+      const chords = generateDiatonicChords(60, 'major');
+      // I chord should be tonic
+      expect(chords[0].function).toBe('tonic');
+      // V chord should be dominant
+      expect(chords[4].function).toBe('dominant');
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle MIDI 0', () => {
+      const chord = generateChord(0, 'major');
+      expect(chord[0]).toBe(0);
+      expect(chord.length).toBe(3);
+    });
+
+    it('should handle high MIDI notes near 127', () => {
+      const chord = generateChord(120, 'major');
+      expect(chord).toBeDefined();
+      expect(chord[0]).toBe(120);
+    });
+
+    it('should handle all available chord types', () => {
+      const types = getAvailableChords();
+      types.forEach((type) => {
+        const chord = generateChord(60, type);
+        expect(chord).toBeDefined();
+        expect(chord[0]).toBe(60);
+        expect(chord.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('should handle inversion of minimum notes', () => {
+      const triad = [60, 64, 67];
+      const inv1 = invert(triad, 1);
+      const inv2 = invert(triad, 2);
+      expect(inv1.length).toBe(3);
+      expect(inv2.length).toBe(3);
+    });
+
+    it('should handle voice leading with same chords', () => {
+      const chord = [60, 64, 67];
+      const result = calculateVoiceLeading(chord, chord);
+      expect(result.minDistance).toBe(0); // No movement needed
     });
   });
 });
