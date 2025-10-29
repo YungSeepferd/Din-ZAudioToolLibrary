@@ -1,581 +1,377 @@
 <script>
   /**
-   * ControlPanel Component
+   * ControlPanel.svelte
+   * Numbers-free, vintage-aesthetic control interface
    *
-   * UI controls for audio parameters including:
-   * - Volume control
-   * - Saturation amount and tone
-   * - Compression threshold, ratio, attack, release
-   * - Reverb decay time and room size
-   * - Envelope controls
+   * Redesigned for Postcard Piano aesthetic:
+   * - No numeric value displays (all visual/perceptual feedback)
+   * - Custom VintageKnob components instead of sliders
+   * - Signature features: AGE, Room Mics, Tube Saturation
+   * - Minimal layout with generous whitespace
+   * - Advanced controls hidden by default
    *
    * @component
    */
 
-  /**
-   * Component props using Svelte 5 $props()
-   */
+  import VintageKnob from '@ui/controls/VintageKnob.svelte';
+  import AGEControl from './AGEControl.svelte';
+  import RoomMicsControl from './RoomMicsControl.svelte';
+  import TubeSaturationControl from './TubeSaturationControl.svelte';
+
   let { audioState = undefined } = $props();
 
+  // Primary control states (numbers-free)
+  let masterVolume = $state(audioState?.pianoState?.masterVolume ?? 0.5);
+  let ageAmount = $state(0);
+  let roomMix = $state(0.3);
+  let roomDecay = $state(2);
+  let saturation = $state(0);
+
+  // Advanced controls (hidden by default)
   let showAdvanced = $state(false);
 
-  /**
-   * Format parameter value for display
-   *
-   * @private
-   * @param {number} value - Parameter value
-   * @param {string} type - Parameter type
-   * @returns {string} Formatted value
-   */
-  function formatValue(value, type) {
-    switch (type) {
-      case 'percentage':
-        return `${Math.round(value * 100)}%`;
-      case 'db':
-        return `${value.toFixed(1)} dB`;
-      case 'time':
-        return `${(value * 1000).toFixed(0)} ms`;
-      case 'ratio':
-        return `${value.toFixed(1)}:1`;
-      case 'frequency':
-        return `${Math.round(value)} Hz`;
-      default:
-        return value.toFixed(2);
-    }
-  }
+  // Advanced control states
+  let attackTime = $state(audioState?.synthesis?.attackTime ?? 0.05);
+  let decayTime = $state(audioState?.synthesis?.decayTime ?? 0.2);
+  let sustainLevel = $state(audioState?.synthesis?.sustainLevel ?? 0.6);
+  let releaseTime = $state(audioState?.synthesis?.releaseTime ?? 1.0);
+  let compressionThreshold = $state(audioState?.effects?.compression?.threshold ?? -24);
+  let compressionRatio = $state(audioState?.effects?.compression?.ratio ?? 4);
 
-  /**
-   * Handle parameter change with audio state sync
-   *
-   * @private
-   * @param {string} path - Parameter path
-   * @param {number} value - New value
-   */
-  function handleParameterChange(path, value) {
+  // Update audio state when primary controls change
+  $effect(() => {
     if (audioState) {
-      audioState.setParameter(path, value);
+      audioState.setParameter('pianoState.masterVolume', masterVolume);
     }
+  });
+
+  $effect(() => {
+    if (audioState) {
+      audioState.setParameter('effects.saturation.amount', saturation / 100);
+    }
+  });
+
+  $effect(() => {
+    if (audioState) {
+      audioState.setParameter('effects.reverb.dryWet', roomMix);
+      audioState.setParameter('effects.reverb.decayTime', roomDecay);
+    }
+  });
+
+  // Advanced control effects
+  $effect(() => {
+    if (audioState && showAdvanced) {
+      audioState.setParameter('synthesis.attackTime', attackTime);
+      audioState.setParameter('synthesis.decayTime', decayTime);
+      audioState.setParameter('synthesis.sustainLevel', sustainLevel);
+      audioState.setParameter('synthesis.releaseTime', releaseTime);
+    }
+  });
+
+  $effect(() => {
+    if (audioState && showAdvanced) {
+      audioState.setParameter('effects.compression.threshold', compressionThreshold);
+      audioState.setParameter('effects.compression.ratio', compressionRatio);
+    }
+  });
+
+  function toggleAdvanced() {
+    showAdvanced = !showAdvanced;
   }
 </script>
 
 <div class="control-panel">
   <!-- Master Volume Section -->
   <section class="control-section">
-    <h3 class="section-title">🔊 Master</h3>
+    <div class="section-header">
+      <h3 class="section-title">Master Volume</h3>
+    </div>
 
-    <div class="control-group">
-      <label for="master-volume" class="control-label">
-        Volume
-        <span class="value-display">
-          {formatValue(audioState?.pianoState?.masterVolume ?? 0.5, 'percentage')}
-        </span>
-      </label>
-      <input
-        id="master-volume"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.pianoState?.masterVolume ?? 0.5}
-        oninput={(e) => handleParameterChange('pianoState.masterVolume', parseFloat(e.target.value))}
-        class="slider"
+    <div class="knob-container">
+      <VintageKnob
+        bind:value={masterVolume}
+        min={0}
+        max={1}
+        step={0.05}
+        label="Level"
+        showIntensity={true}
+        ariaLabel="Master Volume"
       />
     </div>
   </section>
 
-  <!-- Envelope Section -->
-  <section class="control-section">
-    <h3 class="section-title">📈 Envelope (ADSR)</h3>
+  <!-- AGE: Signature Vintage Character Feature -->
+  <AGEControl bind:ageAmount={ageAmount} />
 
-    <div class="control-group">
-      <label for="attack" class="control-label">
-        Attack
-        <span class="value-display">
-          {formatValue(audioState?.synthesis?.attackTime ?? 0.05, 'time')}
-        </span>
-      </label>
-      <input
-        id="attack"
-        type="range"
-        min="0"
-        max="0.5"
-        step="0.01"
-        value={audioState?.synthesis?.attackTime ?? 0.05}
-        oninput={(e) => handleParameterChange('synthesis.attackTime', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
+  <!-- Room Mics: Intimate Studio Ambience -->
+  <RoomMicsControl bind:roomMix={roomMix} bind:roomDecay={roomDecay} />
 
-    <div class="control-group">
-      <label for="decay" class="control-label">
-        Decay
-        <span class="value-display">
-          {formatValue(audioState?.synthesis?.decayTime ?? 0.2, 'time')}
-        </span>
-      </label>
-      <input
-        id="decay"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.synthesis?.decayTime ?? 0.2}
-        oninput={(e) => handleParameterChange('synthesis.decayTime', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
+  <!-- Tube Saturation: Warm Coloration -->
+  <TubeSaturationControl bind:saturation={saturation} />
 
-    <div class="control-group">
-      <label for="sustain" class="control-label">
-        Sustain
-        <span class="value-display">
-          {formatValue(audioState?.synthesis?.sustainLevel ?? 0.6, 'percentage')}
-        </span>
-      </label>
-      <input
-        id="sustain"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.synthesis?.sustainLevel ?? 0.6}
-        oninput={(e) => handleParameterChange('synthesis.sustainLevel', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="release" class="control-label">
-        Release
-        <span class="value-display">
-          {formatValue(audioState?.synthesis?.releaseTime ?? 1.0, 'time')}
-        </span>
-      </label>
-      <input
-        id="release"
-        type="range"
-        min="0"
-        max="3"
-        step="0.05"
-        value={audioState?.synthesis?.releaseTime ?? 1.0}
-        oninput={(e) => handleParameterChange('synthesis.releaseTime', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-  </section>
-
-  <!-- Saturation Section -->
-  <section class="control-section">
-    <h3 class="section-title">🔥 Saturation (Tape Warmth)</h3>
-
-    <div class="control-group">
-      <label for="saturation-amount" class="control-label">
-        Amount
-        <span class="value-display">
-          {formatValue(audioState?.effects?.saturation?.amount ?? 0.3, 'percentage')}
-        </span>
-      </label>
-      <input
-        id="saturation-amount"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.effects?.saturation?.amount ?? 0.3}
-        oninput={(e) => handleParameterChange('effects.saturation.amount', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="saturation-tone" class="control-label">
-        Tone (Dark ← → Bright)
-        <span class="value-display">
-          {Math.round((audioState?.effects?.saturation?.tone ?? 0.5) * 100)}%
-        </span>
-      </label>
-      <input
-        id="saturation-tone"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.effects?.saturation?.tone ?? 0.5}
-        oninput={(e) => handleParameterChange('effects.saturation.tone', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-  </section>
-
-  <!-- Compression Section -->
-  <section class="control-section">
-    <h3 class="section-title">📉 Compression (Dynamics Control)</h3>
-
-    <div class="control-group">
-      <label for="compression-threshold" class="control-label">
-        Threshold
-        <span class="value-display">
-          {formatValue(audioState?.effects?.compression?.threshold ?? -24, 'db')}
-        </span>
-      </label>
-      <input
-        id="compression-threshold"
-        type="range"
-        min="-60"
-        max="0"
-        step="1"
-        value={audioState?.effects?.compression?.threshold ?? -24}
-        oninput={(e) => handleParameterChange('effects.compression.threshold', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="compression-ratio" class="control-label">
-        Ratio
-        <span class="value-display">
-          {formatValue(audioState?.effects?.compression?.ratio ?? 4, 'ratio')}
-        </span>
-      </label>
-      <input
-        id="compression-ratio"
-        type="range"
-        min="1"
-        max="20"
-        step="0.1"
-        value={audioState?.effects?.compression?.ratio ?? 4}
-        oninput={(e) => handleParameterChange('effects.compression.ratio', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="compression-attack" class="control-label">
-        Attack
-        <span class="value-display">
-          {formatValue(audioState?.effects?.compression?.attack ?? 0.003, 'time')}
-        </span>
-      </label>
-      <input
-        id="compression-attack"
-        type="range"
-        min="0.001"
-        max="0.1"
-        step="0.001"
-        value={audioState?.effects?.compression?.attack ?? 0.003}
-        oninput={(e) => handleParameterChange('effects.compression.attack', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="compression-release" class="control-label">
-        Release
-        <span class="value-display">
-          {formatValue(audioState?.effects?.compression?.release ?? 0.25, 'time')}
-        </span>
-      </label>
-      <input
-        id="compression-release"
-        type="range"
-        min="0.01"
-        max="2"
-        step="0.01"
-        value={audioState?.effects?.compression?.release ?? 0.25}
-        oninput={(e) => handleParameterChange('effects.compression.release', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-  </section>
-
-  <!-- Reverb Section -->
-  <section class="control-section">
-    <h3 class="section-title">🌊 Reverb (Space & Ambience)</h3>
-
-    <div class="control-group">
-      <label for="reverb-decay" class="control-label">
-        Decay Time
-        <span class="value-display">
-          {formatValue(audioState?.effects?.reverb?.decayTime ?? 2.0, 'time')}
-        </span>
-      </label>
-      <input
-        id="reverb-decay"
-        type="range"
-        min="0.1"
-        max="10"
-        step="0.1"
-        value={audioState?.effects?.reverb?.decayTime ?? 2.0}
-        oninput={(e) => handleParameterChange('effects.reverb.decayTime', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="reverb-room" class="control-label">
-        Room Size (Small ← → Large)
-        <span class="value-display">
-          {formatValue(audioState?.effects?.reverb?.roomSize ?? 0.5, 'percentage')}
-        </span>
-      </label>
-      <input
-        id="reverb-room"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.effects?.reverb?.roomSize ?? 0.5}
-        oninput={(e) => handleParameterChange('effects.reverb.roomSize', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-
-    <div class="control-group">
-      <label for="reverb-wet" class="control-label">
-        Wet Level
-        <span class="value-display">
-          {formatValue(audioState?.effects?.reverb?.dryWet ?? 0.3, 'percentage')}
-        </span>
-      </label>
-      <input
-        id="reverb-wet"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={audioState?.effects?.reverb?.dryWet ?? 0.3}
-        oninput={(e) => handleParameterChange('effects.reverb.dryWet', parseFloat(e.target.value))}
-        class="slider"
-      />
-    </div>
-  </section>
-
-  <!-- Advanced Toggle -->
-  <div class="advanced-toggle">
-    <button
-      class="toggle-btn"
-      onclick={() => (showAdvanced = !showAdvanced)}
-      aria-expanded={showAdvanced}
-    >
-      {showAdvanced ? '▼ Hide Advanced' : '▶ Show Advanced'}
+  <!-- Advanced Controls: Collapsible Section -->
+  <section class="control-section advanced-section">
+    <button class="advanced-toggle" onclick={toggleAdvanced}>
+      <span class="toggle-label">
+        {showAdvanced ? '▼' : '▶'} Advanced Controls
+      </span>
     </button>
-  </div>
 
-  {#if showAdvanced}
-    <section class="control-section advanced">
-      <h3 class="section-title">🔧 Advanced</h3>
+    {#if showAdvanced}
+      <div class="advanced-content">
+        <!-- Envelope Section -->
+        <div class="subsection">
+          <h4 class="subsection-title">Envelope (ADSR)</h4>
 
-      <div class="control-group">
-        <label for="pre-delay" class="control-label">
-          Reverb Pre-Delay
-          <span class="value-display">
-            {formatValue(audioState?.effects?.reverb?.preDelay ?? 0.02, 'time')}
-          </span>
-        </label>
-        <input
-          id="pre-delay"
-          type="range"
-          min="0"
-          max="0.2"
-          step="0.005"
-          value={audioState?.effects?.reverb?.preDelay ?? 0.02}
-          oninput={(e) => handleParameterChange('effects.reverb.preDelay', parseFloat(e.target.value))}
-          class="slider"
-        />
+          <div class="knob-grid">
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={attackTime}
+                min={0}
+                max={0.5}
+                step={0.01}
+                label="Attack"
+                ariaLabel="Attack Time"
+              />
+            </div>
+
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={decayTime}
+                min={0}
+                max={1}
+                step={0.01}
+                label="Decay"
+                ariaLabel="Decay Time"
+              />
+            </div>
+
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={sustainLevel}
+                min={0}
+                max={1}
+                step={0.05}
+                label="Sustain"
+                ariaLabel="Sustain Level"
+              />
+            </div>
+
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={releaseTime}
+                min={0}
+                max={3}
+                step={0.05}
+                label="Release"
+                ariaLabel="Release Time"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Compression Section -->
+        <div class="subsection">
+          <h4 class="subsection-title">Compression</h4>
+
+          <div class="knob-grid">
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={compressionThreshold}
+                min={-60}
+                max={0}
+                step={1}
+                label="Threshold"
+                ariaLabel="Compression Threshold"
+              />
+            </div>
+
+            <div class="knob-item">
+              <VintageKnob
+                bind:value={compressionRatio}
+                min={1}
+                max={20}
+                step={0.5}
+                label="Ratio"
+                ariaLabel="Compression Ratio"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="info-box">
-        <p>
-          <strong>Audio State:</strong>
-          {audioState?.pianoState?.isInitialized ? '✓ Initialized' : '✗ Not initialized'}
-        </p>
-        <p>
-          <strong>Active Notes:</strong>
-          {audioState?.pianoState?.activeNotes?.size ?? 0}
-        </p>
-      </div>
-    </section>
-  {/if}
+    {/if}
+  </section>
 </div>
 
 <style>
   .control-panel {
+    /* Design tokens - local scope */
+    --color-cream: #f5f1e8;
+    --color-taupe: #8b8680;
+    --color-sage: #9ca89a;
+    --color-warm-brown: #6b5b52;
+    --color-gold: #d4a574;
+    --color-deep-brown: #3d3230;
+
+    --color-background: var(--color-cream);
+    --color-surface: #ebe7dd;
+    --color-text-primary: var(--color-deep-brown);
+    --color-text-secondary: var(--color-taupe);
+    --color-border: var(--color-sage);
+    --color-accent: var(--color-gold);
+
+    --shadow-sm: 0 1px 2px rgba(61, 50, 48, 0.08);
+    --shadow-md: 0 2px 4px rgba(61, 50, 48, 0.12);
+
+    --border-radius-md: 4px;
+
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--surface-bg) 100%);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid rgba(96, 165, 250, 0.1);
+    gap: 0;
+    background: var(--color-background);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
   }
 
   .control-section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background: rgba(15, 23, 42, 0.4);
-    border-radius: var(--border-radius-md);
-    border: 1px solid rgba(96, 165, 250, 0.05);
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--color-background);
+
+    /* Separator between sections */
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .control-section.advanced {
-    background: rgba(251, 146, 60, 0.05);
-    border-color: rgba(251, 146, 60, 0.2);
+  .control-section:last-child {
+    border-bottom: none;
+  }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
   }
 
   .section-title {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .control-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.875rem;
+    font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--color-text-primary);
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
 
-  .value-display {
-    font-family: 'Monaco', 'Courier New', monospace;
-    font-size: 0.8rem;
-    color: var(--accent);
-    font-weight: 500;
-    background: rgba(96, 165, 250, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--border-radius-sm);
-  }
-
-  .slider {
+  .knob-container {
+    display: flex;
+    justify-content: center;
     width: 100%;
-    height: 6px;
-    border-radius: var(--border-radius-sm);
-    background: linear-gradient(to right, #ef4444, #f97316, #eab308, #22c55e, #06b6d4);
-    outline: none;
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
   }
 
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
-    transition: all 0.2s ease;
-    border: 2px solid var(--primary-bg);
-  }
-
-  .slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.6);
-  }
-
-  .slider::-webkit-slider-thumb:active {
-    transform: scale(1.1);
-  }
-
-  .slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
-    transition: all 0.2s ease;
-    border: 2px solid var(--primary-bg);
-  }
-
-  .slider::-moz-range-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.6);
-  }
-
-  .slider::-moz-range-track {
-    background: transparent;
-    border: none;
+  /* Advanced Controls Section */
+  .advanced-section {
+    gap: 0;
+    padding: 0;
+    border-top: 2px solid var(--color-border);
   }
 
   .advanced-toggle {
+    /* Reset button styling */
+    background: none;
+    border: none;
+    padding: var(--space-6);
+    margin: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+
+    /* Typography */
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    /* Hover state */
+    transition: background 0.2s ease-out;
+    background: var(--color-surface);
+  }
+
+  .advanced-toggle:hover {
+    background: #e0dbd0;
+  }
+
+  .advanced-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .advanced-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--color-surface);
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .subsection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .subsection:not(:last-child) {
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .subsection-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .knob-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-4);
+    justify-items: center;
+  }
+
+  .knob-item {
     display: flex;
     justify-content: center;
-    padding-top: 0.5rem;
-  }
-
-  .toggle-btn {
-    padding: 0.5rem 1rem;
-    background: rgba(96, 165, 250, 0.1);
-    color: var(--accent);
-    border: 1px solid rgba(96, 165, 250, 0.3);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .toggle-btn:hover {
-    background: rgba(96, 165, 250, 0.2);
-    border-color: rgba(96, 165, 250, 0.5);
-  }
-
-  .toggle-btn:active {
-    transform: scale(0.98);
-  }
-
-  .info-box {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: rgba(96, 165, 250, 0.05);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--border-radius-sm);
-  }
-
-  .info-box p {
-    margin: 0.25rem 0;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-  }
-
-  .info-box strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .control-panel {
-      padding: 1rem;
-      gap: 1rem;
-    }
-
-    .control-section {
-      padding: 0.75rem;
-      gap: 0.75rem;
-    }
-
-    .section-title {
-      font-size: 0.9rem;
-    }
-
-    .control-label {
-      font-size: 0.8rem;
-    }
   }
 </style>

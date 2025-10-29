@@ -270,6 +270,187 @@ The project uses Svelte 5's new Runes system instead of reactive declarations:
 <Knob bind:value={frequency} min={20} max={20000} label="Frequency" />
 ```
 
+## 🎯 Svelte 5 Standards & Best Practices
+
+**MANDATORY**: All new Svelte components MUST follow Svelte 5 Runes syntax. No Svelte 4 patterns.
+
+### Core Runes (Replace Svelte 4 Patterns)
+
+| Svelte 4 | Svelte 5 | Purpose |
+|----------|----------|---------|
+| `let x;` (implicit reactive) | `let x = $state(initial)` | Component state |
+| `$: x = derived()` | `let x = $derived(expression)` | Computed values (read-only) |
+| `$: side_effect()` | `$effect(() => { side_effect() })` | Side effects (IO, timers, listeners) |
+| `export let prop;` | `let { prop } = $props()` | Component props |
+| `export let prop = value;` | `let { prop = value } = $props()` | Props with defaults |
+| `bind:` on component | `let { prop = $bindable(val) } = $props()` | Two-way binding props |
+| `on:event={handler}` | `onevent={handler}` | Event handlers (no colon!) |
+| `createEventDispatcher()` | Callback props + `onevent` | Component events → callbacks |
+
+### Svelte 5 Component Pattern (Complete Example)
+
+```svelte
+<script>
+  // ===== PROPS (Svelte 5 style with $props) =====
+  let {
+    value = $bindable(0),      // Two-way bindable prop
+    min = 0,                   // Regular prop with default
+    max = 100,
+    disabled = false,
+    onchange,                  // Callback prop instead of event dispatcher
+    children                   // Reserved prop for slot content ($render)
+  } = $props();
+
+  // ===== STATE (Svelte 5 $state rune) =====
+  let isOpen = $state(false);
+  let count = $state(0);
+
+  // ===== DERIVED (Svelte 5 $derived rune) =====
+  // Auto-updates when dependencies change, read-only
+  let normalized = $derived(value / (max - min));
+  let displayText = $derived.by(() => {
+    if (normalized < 0.5) return 'Low';
+    return 'High';
+  });
+
+  // ===== EFFECTS (Svelte 5 $effect rune) =====
+  // Side effects: API calls, timers, event listeners, DOM manipulation
+  $effect(() => {
+    console.log(`Value changed to ${value}`);
+  });
+
+  // Cleanup pattern: return function runs on unmount
+  $effect(() => {
+    const timer = setInterval(() => count++, 1000);
+    return () => clearInterval(timer);
+  });
+
+  // ===== EVENT HANDLERS =====
+  function handleClick(e) {
+    if (!disabled) {
+      count++;
+      onchange?.(count);
+    }
+  }
+</script>
+
+<!-- Svelte 5 EVENT HANDLER SYNTAX: use onevent (no on: directive!) -->
+<button
+  onclick={handleClick}
+  ondoubleclick={() => count = 0}
+  disabled={disabled || isOpen}
+  aria-label="Counter button"
+>
+  Count: {count}
+</button>
+
+<!-- Render children snippet (replaces <slot />) -->
+{#if children}
+  {@render children()}
+{/if}
+```
+
+### Critical Rules for Svelte 5
+
+1. **NEVER use Svelte 4 patterns**:
+   - ❌ `let x;` then use directly (must use `$state()`)
+   - ❌ `$: x = ...;` (use `$derived()` for values, `$effect()` for side effects)
+   - ❌ `export let prop;` (use `let { prop } = $props()`)
+   - ❌ `on:event` directive (use `onevent` prop)
+   - ❌ `createEventDispatcher()` (use callback props)
+   - ❌ `<slot />` (use `children` prop + `{@render children()}`)
+
+2. **Props are NOT automatically reactive**:
+   - Props are immutable by default
+   - To make a prop two-way bindable, use `$bindable()`: `let { x = $bindable(0) } = $props()`
+   - Parent must use `bind:x={variable}` to trigger updates
+
+3. **$effect cleanup is essential**:
+   - Always return cleanup functions in `$effect` for event listeners, timers, subscriptions
+   - Without cleanup, memory leaks occur on component unmount
+
+4. **Use $derived for computed values** (NOT $effect):
+   - `$derived` is for pure computations: `let doubled = $derived(value * 2)`
+   - `$effect` is for side effects: logging, API calls, DOM updates
+   - Using $effect for computations causes redundant runs and breaks reactivity
+
+5. **Runes ONLY in .svelte files**:
+   - Cannot use `$state`, `$derived`, `$effect` in .js/.ts files
+   - For shared state in .js files, use `$state()` inside a `.svelte.js` file instead
+   - Regular .js files cannot have runes
+
+6. **Event handlers are properties** (Svelte 5 change):
+   - Use `onclick={handler}` (not `on:click={handler}`)
+   - Event handlers can be spread: `<button {...props} />`
+   - No event modifiers like `|preventDefault` (use `e.preventDefault()` instead)
+
+7. **CSS is component-scoped** (unchanged):
+   - Scoped styles prevent conflicts between components
+   - CSS custom properties (--token-name) are scoped to component
+   - Use `:global(...)` sparingly for true global styles
+
+### Svelte 5 File Structure
+
+```
+src/
+├── lib/
+│   ├── components/
+│   │   └── MyComponent.svelte         # Svelte 5 runes required
+│   └── stores/
+│       └── appState.svelte.js         # Runes OK in .svelte.js
+├── audio/
+│   └── synthesis.js                   # NO runes (regular JS)
+└── App.svelte                         # Root component (Svelte 5)
+```
+
+### Dependency Versions (Svelte 5 Compatible)
+
+Always use these minimum versions:
+
+```json
+{
+  "devDependencies": {
+    "svelte": "^5.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "vite": "^5.0.0"
+  }
+}
+```
+
+### Component Documentation Pattern
+
+Every component should have a header comment explaining:
+
+```svelte
+<script>
+  /**
+   * MyComponent.svelte
+   *
+   * CONCEPT: Brief description of what this component does
+   *
+   * SVELTE 5 PATTERNS USED:
+   * - $props() for destructuring
+   * - $state() for local state
+   * - $derived() for computed values
+   * - $effect() for side effects
+   *
+   * USAGE:
+   * <MyComponent bind:value={myVar} onChange={handleChange} />
+   *
+   * PROPS:
+   * - value (bindable): Current value
+   * - onChange (callback): Fired when value changes
+   * - disabled: Disable interaction
+   */
+
+  let { value = $bindable(0), onChange, disabled = false } = $props();
+
+  // ... rest of component
+</script>
+```
+
 ## 📚 Code Quality Standards
 
 ### File Headers

@@ -1,0 +1,10 @@
+import { w as slot } from "../../chunks/index.js";
+function _layout($$renderer, $$props) {
+  $$renderer.push(`<!--[-->`);
+  slot($$renderer, $$props, "default", {});
+  $$renderer.push(`<!--]-->`);
+}
+export {
+  _layout as default
+};
+//# sourceMappingURL=_layout.svelte.js.map

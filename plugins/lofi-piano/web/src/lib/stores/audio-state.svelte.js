@@ -1,20 +1,21 @@
 /**
  * Audio State Management
  *
- * Reactive state for the LoFi Piano using Svelte 5 Runes.
- * This file uses .svelte.js extension for shared reactive logic.
+ * Manages audio state for the LoFi Piano.
+ * Uses plain JavaScript objects with callback-based updates.
+ * Component scripts use Svelte 5 $state to wrap these values.
  *
  * Features:
- * - Svelte 5 $state and $derived for reactivity
  * - Integration with audio DSP modules
  * - MIDI note to frequency conversion
  * - Preset management
  * - Parameter change callbacks
  *
+ * Note: This is a plain JS module. Use $state in Svelte components
+ * to make values reactive, or create a .svelte component wrapper.
+ *
  * @module stores/audio-state
  */
-
-import { $state, $derived, $effect } from 'svelte';
 import { createPianoVoice } from '../audio/synthesis/piano-voice.js';
 import { createSaturation } from '../audio/effects/saturation.js';
 import { createCompressor } from '../audio/effects/compression.js';
@@ -35,17 +36,17 @@ export function createAudioState() {
   let reverbEffect = null;
   let masterGain = null;
 
-  // Piano state
-  let pianoState = $state({
+  // Piano state - plain JS object (wrap in $state in components)
+  const pianoState = {
     isPlaying: false,
     activeNotes: new Set(),
     masterVolume: 0.5,
     presetIndex: 0,
     isInitialized: false
-  });
+  };
 
   // Synthesis parameters (for new voices)
-  let synthesis = $state({
+  const synthesis = {
     frequency: 440,
     detune: [0, 15, -20],
     velocity: 100,
@@ -53,10 +54,10 @@ export function createAudioState() {
     decayTime: 0.2,
     sustainLevel: 0.6,
     releaseTime: 1.0
-  });
+  };
 
   // Effect parameters
-  let effects = $state({
+  const effects = {
     saturation: {
       amount: 0.3,
       tone: 0.5,
@@ -75,12 +76,7 @@ export function createAudioState() {
       preDelay: 0.02,
       dryWet: 0.3
     }
-  });
-
-  // Computed derived values
-  const frequency$derived = $derived(synthesis.frequency);
-  const noteCount$derived = $derived(pianoState.activeNotes.size);
-  const isActiveNote$ = (note) => $derived(pianoState.activeNotes.has(note));
+  };
 
   /**
    * Initialize audio system
@@ -139,51 +135,36 @@ export function createAudioState() {
     }
   }
 
-  // Effects to sync state changes to audio nodes
-  $effect(() => {
+  /**
+   * Sync parameter changes to audio nodes
+   * These are called from component $effects when values change
+   */
+  function syncSaturation() {
     if (!pianoState.isInitialized || !saturationEffect) return;
     saturationEffect.setAmount(effects.saturation.amount);
-  });
-
-  $effect(() => {
-    if (!pianoState.isInitialized || !saturationEffect) return;
     saturationEffect.setTone(effects.saturation.tone);
-  });
+  }
 
-  $effect(() => {
+  function syncCompression() {
     if (!pianoState.isInitialized || !compressionEffect) return;
     compressionEffect.setThreshold(effects.compression.threshold);
-  });
-
-  $effect(() => {
-    if (!pianoState.isInitialized || !compressionEffect) return;
     compressionEffect.setRatio(effects.compression.ratio);
-  });
-
-  $effect(() => {
-    if (!pianoState.isInitialized || !compressionEffect) return;
     compressionEffect.setAttack(effects.compression.attack);
-  });
-
-  $effect(() => {
-    if (!pianoState.isInitialized || !compressionEffect) return;
     compressionEffect.setRelease(effects.compression.release);
-  });
+  }
 
-  $effect(() => {
+  function syncReverb() {
     if (!pianoState.isInitialized || !reverbEffect) return;
-    reverbEffect.setDecayTime(effects.reverb.decayTime);
-  });
-
-  $effect(() => {
-    if (!pianoState.isInitialized || !reverbEffect) return;
+    reverbEffect.setDecay(effects.reverb.decayTime);
     reverbEffect.setRoomSize(effects.reverb.roomSize);
-  });
+  }
 
-  $effect(() => {
+  function syncMasterVolume() {
     if (!pianoState.isInitialized || !masterGain) return;
-    masterGain.gain.linearRampToValueAtTime(pianoState.masterVolume, audioContext.currentTime + 0.05);
-  });
+    masterGain.gain.setValueAtTime(pianoState.masterVolume, getAudioContext().currentTime);
+  }
+
+  // Component $effects will call sync methods when values change
 
   return {
     // State objects
@@ -191,10 +172,11 @@ export function createAudioState() {
     synthesis,
     effects,
 
-    // Derived values
-    frequency$derived,
-    noteCount$derived,
-    isActiveNote$,
+    // Sync methods for $effects in components
+    syncSaturation,
+    syncCompression,
+    syncReverb,
+    syncMasterVolume,
 
     /**
      * Initialize audio system

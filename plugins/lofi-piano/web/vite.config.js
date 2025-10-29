@@ -1,24 +1,41 @@
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [sveltekit()],
   server: {
     port: 5173,
-    host: true
+    host: true,
+    fs: {
+      allow: ['../../shared']
+    }
   },
   build: {
     target: 'ES2020',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[hash].[ext]'
+      }
+    }
   },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.js'],
-    globals: true
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html']
+    }
   },
   resolve: process.env.VITEST
     ? {
         conditions: ['browser']
       }
-    : undefined
+    : undefined,
+  ssr: {
+    external: ['web-audio-api']
+  }
 });
