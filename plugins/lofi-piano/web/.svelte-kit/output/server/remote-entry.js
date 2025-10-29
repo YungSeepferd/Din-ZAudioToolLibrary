@@ -276,6 +276,7 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
           const all_issues = get_issues()[key === "" ? "$" : key];
           if (prop === "allIssues") {
             return all_issues?.map((issue) => ({
+              path: issue.path,
               message: issue.message
             }));
           }
@@ -440,7 +441,7 @@ function form(validate_or_fn, maybe_fn) {
         const { event, state } = get_request_store();
         const validated = await schema?.["~standard"].validate(data);
         if (validate_only) {
-          return validated?.issues ?? [];
+          return validated?.issues?.map((issue) => normalize_issue(issue, true)) ?? [];
         }
         if (validated?.issues !== void 0) {
           handle_issues(output, validated.issues, event.isRemoteRequest, form_data);

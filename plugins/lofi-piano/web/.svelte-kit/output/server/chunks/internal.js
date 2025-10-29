@@ -192,7 +192,6 @@ function invoke_error_boundary(error, effect) {
 const batches = /* @__PURE__ */ new Set();
 let current_batch = null;
 let batch_values = null;
-let effect_pending_updates = /* @__PURE__ */ new Set();
 let queued_root_effects = [];
 let last_scheduled_effect = null;
 let is_flushing = false;
@@ -281,6 +280,7 @@ class Batch {
       current_batch = null;
       flush_queued_effects(target.render_effects);
       flush_queued_effects(target.effects);
+      this.#deferred?.resolve();
     }
     batch_values = null;
   }
@@ -378,13 +378,6 @@ class Batch {
       this.process([]);
     }
     this.deactivate();
-    for (const update of effect_pending_updates) {
-      effect_pending_updates.delete(update);
-      update();
-      if (current_batch !== null) {
-        break;
-      }
-    }
   }
   discard() {
     for (const fn of this.#discard_callbacks) fn(this);
@@ -453,7 +446,6 @@ class Batch {
     }
     this.committed = true;
     batches.delete(this);
-    this.#deferred?.resolve();
   }
   /**
    *
@@ -745,11 +737,6 @@ class Boundary {
    * @type {Source<number> | null}
    */
   #effect_pending = null;
-  #effect_pending_update = () => {
-    if (this.#effect_pending) {
-      internal_set(this.#effect_pending, this.#local_pending_count);
-    }
-  };
   #effect_pending_subscriber = createSubscriber(() => {
     this.#effect_pending = source(this.#local_pending_count);
     return () => {
@@ -930,7 +917,9 @@ class Boundary {
   update_pending_count(d) {
     this.#update_pending_count(d);
     this.#local_pending_count += d;
-    effect_pending_updates.add(this.#effect_pending_update);
+    if (this.#effect_pending) {
+      internal_set(this.#effect_pending, this.#local_pending_count);
+    }
   }
   get_effect_pending() {
     this.#effect_pending_subscriber();
@@ -2630,7 +2619,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "z1xibd"
+  version_hash: "1pl4vjn"
 };
 async function get_hooks() {
   let handle;
