@@ -4,11 +4,20 @@
   "type": "module",
   "description": "Core audio DSP utilities for web audio plugins",
   "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  },
   "exports": {
     ".": "./index.js",
     "./synthesis": "./synthesis/index.js",
     "./effects": "./effects/index.js",
-    "./utils": "./utils/index.js"
+    "./utils": "./utils/index.js",
+    "./music-theory": "./music-theory/index.js"
   },
-  "files": ["synthesis", "effects", "utils", "index.js"]
+  "files": ["synthesis", "effects", "utils", "music-theory", "index.js"],
+  "devDependencies": {
+    "vitest": "^1.0.0"
+  }
 }
