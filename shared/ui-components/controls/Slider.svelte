@@ -1,5 +1,26 @@
 <script>
-  let { value = 0, min = 0, max = 100, step = 1, label = '', vertical = false } = $props();
+  /**
+   * Slider.svelte - Reusable range input control
+   *
+   * A basic slider component for linear parameter control
+   *
+   * Props:
+   * - value: Current numeric value (bound)
+   * - min/max: Value range
+   * - step: Increment size
+   * - label: Display label
+   * - vertical: Vertical orientation (default: false)
+   * - showValue: Show/hide numeric value display (default: false for numbers-free design)
+   */
+  let {
+    value = 0,
+    min = 0,
+    max = 100,
+    step = 1,
+    label = '',
+    vertical = false,
+    showValue = false  // Hide numbers by default (numbers-free design)
+  } = $props();
 </script>
 
 <div class="slider-container" class:vertical>
@@ -19,7 +40,9 @@
     aria-valuemax={max}
     aria-valuenow={value}
   />
-  <span class="value-display">{value.toFixed(1)}</span>
+  {#if showValue}
+    <span class="value-display">{value.toFixed(1)}</span>
+  {/if}
 </div>
 
 <style>

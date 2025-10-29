@@ -1,5 +1,25 @@
 <script>
-  let { value = 0, min = 0, max = 100, step = 1, label = '' } = $props();
+  /**
+   * Knob.svelte - Reusable rotary control
+   *
+   * A basic knob component that can be used for simple parameter control
+   * Use VintageKnob.svelte for audio plugin UIs (better styling & features)
+   *
+   * Props:
+   * - value: Current numeric value (bound)
+   * - min/max: Value range
+   * - step: Increment size
+   * - label: Display label
+   * - showValue: Show/hide numeric value display (default: false for numbers-free design)
+   */
+  let {
+    value = 0,
+    min = 0,
+    max = 100,
+    step = 1,
+    label = '',
+    showValue = false  // Hide numbers by default (numbers-free design)
+  } = $props();
 
   let isDragging = $state(false);
   let startY = $state(0);
@@ -60,7 +80,9 @@
     bind:value
     class="hidden-slider"
   />
-  <span class="value-display">{value.toFixed(1)}</span>
+  {#if showValue}
+    <span class="value-display">{value.toFixed(1)}</span>
+  {/if}
 </div>
 
 <style>
