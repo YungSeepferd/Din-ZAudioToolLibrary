@@ -18,6 +18,8 @@
   import RoomMicsControl from './RoomMicsControl.svelte';
   import TubeSaturationControl from './TubeSaturationControl.svelte';
   import SpectrumAnalyzer from '@ui/visualizers/SpectrumAnalyzer.svelte';
+  import EnvelopeGraph from '@ui/visualizers/EnvelopeGraph.svelte';
+  import VUMeter from '@ui/visualizers/VUMeter.svelte';
 
   let { audioState = undefined } = $props();
 
@@ -101,19 +103,33 @@
     </div>
   </section>
 
-  <!-- Visual Feedback: Spectrum Analyzer -->
+  <!-- Visual Feedback: Spectrum & Levels -->
   <section class="control-section visualizer-section">
     <div class="section-header">
-      <h3 class="section-title">Audio Spectrum</h3>
-      <p class="section-description">Real-time frequency visualization</p>
+      <h3 class="section-title">Audio Visualization</h3>
+      <p class="section-description">Real-time frequency spectrum and level monitoring</p>
     </div>
 
-    <SpectrumAnalyzer 
-      audioContext={audioState?.audioContext}
-      sourceNode={audioState?.masterGain}
-      width={600}
-      height={150}
-    />
+    <div class="visualizers-grid">
+      <div class="visualizer-item spectrum-item">
+        <SpectrumAnalyzer 
+          audioContext={audioState?.audioContext}
+          sourceNode={audioState?.masterGain}
+          width={600}
+          height={150}
+        />
+      </div>
+
+      <div class="visualizer-item meter-item">
+        <VUMeter
+          audioContext={audioState?.audioContext}
+          sourceNode={audioState?.masterGain}
+          orientation="vertical"
+          width={40}
+          height={150}
+        />
+      </div>
+    </div>
   </section>
 
   <!-- AGE: Signature Vintage Character Feature -->
@@ -183,6 +199,18 @@
                 ariaLabel="Release Time"
               />
             </div>
+          </div>
+
+          <!-- Envelope Visualization -->
+          <div class="visualizer-container">
+            <EnvelopeGraph
+              attack={attackTime}
+              decay={decayTime}
+              sustain={sustainLevel}
+              release={releaseTime}
+              width={400}
+              height={120}
+            />
           </div>
         </div>
 
@@ -300,6 +328,27 @@
     background: var(--color-surface);
   }
 
+  .visualizers-grid {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .visualizer-item {
+    display: flex;
+  }
+
+  .spectrum-item {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .meter-item {
+    flex-shrink: 0;
+  }
+
   .knob-container {
     display: flex;
     justify-content: center;
@@ -402,5 +451,13 @@
   .knob-item {
     display: flex;
     justify-content: center;
+  }
+
+  /* Visualizer Container */
+  .visualizer-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--space-2);
   }
 </style>
