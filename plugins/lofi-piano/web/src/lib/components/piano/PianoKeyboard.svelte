@@ -403,30 +403,29 @@
   */
 
   .keyboard-container {
-    /* Vintage wood grain background and border */
-    --vintage-wood-dark: #3e2723;
-    --vintage-wood-light: #5d4037;
-    --vintage-wood-accent: #6d4c41;
+    /* Piano key colors - using global design tokens */
+    --piano-white-light: var(--key-white); /* From global tokens.css */
+    --piano-white-mid: var(--bg-secondary);
+    --piano-white-dark: var(--color-surface);
+    --piano-black-light: var(--key-black);
+    --piano-black-dark: var(--color-deep-brown);
 
-    /* Piano key colors - vintage ivory and ebony */
-    --piano-white-light: #f5f1e8; /* Warm ivory (not pure white) */
-    --piano-white-mid: #ede8df;
-    --piano-white-dark: #d7d3c8;
-    --piano-black-light: #2c2c2c; /* Not pure black */
-    --piano-black-dark: #1a1a1a;
-
-    /* Accent colors for feedback */
-    --active-shadow: rgba(218, 165, 32, 0.3); /* Warm gold glow */
+    /* Accent colors for feedback - using global tokens */
+    --active-shadow: rgba(212, 165, 116, 0.3); /* var(--accent) with alpha */
     --hover-shadow: rgba(0, 0, 0, 0.15);
+
+    /* Wood background for contrast */
+    --vintage-wood-dark: var(--color-warm-brown);
+    --vintage-wood-accent: #6d4c41;
 
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, var(--vintage-wood-light) 0%, var(--vintage-wood-accent) 100%);
-    border-radius: 12px;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: linear-gradient(135deg, var(--vintage-wood-accent) 0%, var(--vintage-wood-dark) 100%);
+    border-radius: var(--border-radius-xl);
     border: 2px solid var(--vintage-wood-dark);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .keyboard {
@@ -481,10 +480,10 @@
   }
 
   .key.white-key.active {
-    /* Pressed effect - darker, inset shadow */
-    background: linear-gradient(to bottom, var(--piano-white-mid) 0%, var(--piano-white-dark) 60%, #c4bfb4 100%);
-    /* Inset shadow for depression, subtle glow for feedback */
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 -1px 2px rgba(0, 0, 0, 0.1), 0 2px 4px var(--active-shadow);
+    /* Pressed effect - golden accent highlight */
+    background: linear-gradient(to bottom, var(--key-white-active) 0%, var(--accent) 60%, var(--accent-hover) 100%);
+    /* Inset shadow for depression, warm gold glow for feedback */
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 -1px 2px rgba(0, 0, 0, 0.1), 0 2px 8px var(--active-shadow);
     /* Physical depression effect */
     transform: translateY(2px);
   }
@@ -520,9 +519,9 @@
   }
 
   .key.black-key.active {
-    /* Pressed effect with warm glow */
-    background: linear-gradient(to bottom, #1f1f1f 0%, #0a0a0a 100%);
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 2px 4px var(--active-shadow);
+    /* Pressed effect with warm gold accent glow */
+    background: linear-gradient(to bottom, var(--key-black-active) 0%, var(--accent-hover) 70%, var(--accent) 100%);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 2px 8px var(--active-shadow);
     transform: translateY(2px);
   }
 
@@ -637,7 +636,7 @@
   */
 
   .key:focus {
-    outline: 2px solid #d4a574; /* Warm gold outline */
+    outline: 2px solid var(--accent); /* Warm gold outline from design tokens */
     outline-offset: 2px;
   }
 

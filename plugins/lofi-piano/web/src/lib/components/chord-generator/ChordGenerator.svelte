@@ -208,33 +208,31 @@
   </footer>
 </div>
 
-<!-- ===== STYLES ===== -->
+<!-- ===== STYLES - Using Design Tokens ===== -->
 <style>
+  /* ========================================
+     MAIN CONTAINER - Vintage Aesthetic
+     ======================================== */
+  
   .chord-generator {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    padding: 2rem;
-    background: linear-gradient(180deg, #f5f1e8 0%, #e8e3d8 50%, #ddd2c3 100%);
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    gap: var(--gap-sections);
+    width: 100%;
+    font-family: var(--font-family-primary);
   }
 
-  /* Header Section */
+  /* ========================================
+     HEADER SECTION
+     ======================================== */
+  
   .generator-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 3px solid rgba(139, 69, 19, 0.2);
-  }
-
-  @media (max-width: 768px) {
-    .generator-header {
-      flex-direction: column;
-      gap: 1rem;
-    }
+    gap: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 2px solid var(--border-color);
   }
 
   .header-content {
@@ -242,69 +240,66 @@
   }
 
   .generator-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #5c3317;
-    margin: 0 0 0.5rem 0;
-    letter-spacing: 0.5px;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
+    letter-spacing: var(--letter-spacing-wide);
   }
 
   .generator-subtitle {
-    font-size: 1rem;
-    color: #8b6f47;
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
     margin: 0;
-    font-weight: 500;
+    font-weight: var(--font-weight-normal);
   }
 
+  /* Quick Status Card */
   .quick-status {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    background: white;
-    border-radius: 8px;
-    border-left: 4px solid #8b6f47;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background: var(--bg-elevated);
+    border-radius: var(--border-radius-lg);
+    border-left: 4px solid var(--accent);
+    box-shadow: var(--shadow-md);
   }
 
   .status-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.95rem;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
   }
 
   .status-label {
-    font-weight: 600;
-    color: #5c3317;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
     min-width: 100px;
   }
 
   .status-value {
-    font-weight: 700;
-    color: #8b6f47;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 0.5px;
+    font-weight: var(--font-weight-bold);
+    color: var(--accent);
+    font-family: var(--font-family-mono);
+    letter-spacing: var(--letter-spacing-wide);
   }
 
-  /* Main Content Grid */
+  /* ========================================
+     MAIN CONTENT GRID
+     ======================================== */
+  
   .generator-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  @media (max-width: 1200px) {
-    .generator-content {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
+    gap: var(--gap-sections);
   }
 
   .content-section {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-controls);
   }
 
   .selector-section {
@@ -315,48 +310,51 @@
     order: 2;
   }
 
-  /* Footer Section */
+  /* ========================================
+     FOOTER - EDUCATIONAL RESOURCES
+     ======================================== */
+  
   .generator-footer {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 2rem;
-    background: rgba(139, 69, 19, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(139, 69, 19, 0.1);
-    margin-top: 1rem;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-xl);
+    border: var(--border-default);
+    margin-top: var(--space-4);
   }
 
   .footer-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    gap: var(--gap-sections);
   }
 
   .footer-section {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
 
   .footer-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #5c3317;
-    margin: 0 0 0.5rem 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-wider);
   }
 
   .footer-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
     margin: 0;
-    padding-left: 1.25rem;
-    font-size: 0.85rem;
-    color: #6b5d4f;
-    line-height: 1.5;
+    padding-left: var(--space-5);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
   }
 
   .footer-list li {
@@ -364,14 +362,14 @@
   }
 
   .footer-list strong {
-    color: #5c3317;
-    font-weight: 600;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
   }
 
   .footer-divider {
     height: 1px;
-    background: rgba(139, 69, 19, 0.15);
-    margin: 0;
+    background: var(--border-color);
+    margin: var(--space-2) 0;
   }
 
   .footer-credit {
@@ -382,63 +380,85 @@
 
   .footer-credit p {
     margin: 0;
-    font-size: 0.85rem;
-    color: #8b6f47;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
   }
 
   .footer-credit a {
-    color: #8b6f47;
+    color: var(--accent);
     text-decoration: underline;
-    font-weight: 600;
-    transition: color 0.2s ease;
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transition-colors);
   }
 
   .footer-credit a:hover {
-    color: #5c3317;
+    color: var(--accent-hover);
   }
 
-  /* Responsive Design */
+  .footer-credit a:focus-visible {
+    outline: var(--border-width-normal) solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+  }
+
+  /* ========================================
+     RESPONSIVE DESIGN
+     ======================================== */
+  
+  @media (max-width: 1200px) {
+    .generator-content {
+      grid-template-columns: 1fr;
+      gap: var(--gap-controls);
+    }
+  }
+
   @media (max-width: 768px) {
-    .chord-generator {
-      padding: 1rem;
-      gap: 1.5rem;
+    .generator-header {
+      flex-direction: column;
+      gap: var(--space-4);
     }
 
     .generator-title {
-      font-size: 1.5rem;
+      font-size: var(--font-size-xl);
     }
 
     .generator-subtitle {
-      font-size: 0.9rem;
+      font-size: var(--font-size-sm);
+    }
+
+    .quick-status {
+      width: 100%;
     }
 
     .generator-footer {
-      padding: 1.5rem;
+      padding: var(--space-6);
     }
 
     .footer-content {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: var(--gap-controls);
     }
   }
 
-  /* Print Styles */
+  /* ========================================
+     PRINT STYLES
+     ======================================== */
+  
   @media print {
     .chord-generator {
       background: white;
-      gap: 1rem;
-      padding: 0;
+      gap: var(--space-4);
     }
 
     .generator-header {
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid var(--border-color);
       page-break-after: avoid;
     }
 
     .generator-footer {
       background: white;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border-color);
     }
   }
 </style>
