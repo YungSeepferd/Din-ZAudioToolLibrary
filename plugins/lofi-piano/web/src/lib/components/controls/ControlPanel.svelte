@@ -17,6 +17,7 @@
   import AGEControl from './AGEControl.svelte';
   import RoomMicsControl from './RoomMicsControl.svelte';
   import TubeSaturationControl from './TubeSaturationControl.svelte';
+  import SpectrumAnalyzer from '@ui/visualizers/SpectrumAnalyzer.svelte';
 
   let { audioState = undefined } = $props();
 
@@ -98,6 +99,21 @@
         ariaLabel="Master Volume"
       />
     </div>
+  </section>
+
+  <!-- Visual Feedback: Spectrum Analyzer -->
+  <section class="control-section visualizer-section">
+    <div class="section-header">
+      <h3 class="section-title">Audio Spectrum</h3>
+      <p class="section-description">Real-time frequency visualization</p>
+    </div>
+
+    <SpectrumAnalyzer 
+      audioContext={audioState?.audioContext}
+      sourceNode={audioState?.masterGain}
+      width={600}
+      height={150}
+    />
   </section>
 
   <!-- AGE: Signature Vintage Character Feature -->
@@ -269,6 +285,19 @@
     margin: 0;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+  }
+
+  .section-description {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Visualizer Section */
+  .visualizer-section {
+    background: var(--color-surface);
   }
 
   .knob-container {
