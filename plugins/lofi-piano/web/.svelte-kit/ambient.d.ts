@@ -28,9 +28,7 @@
 declare module '$env/static/private' {
 	export const NVM_INC: string;
 	export const MANPATH: string;
-	export const NoDefaultCurrentDirectoryInExePath: string;
 	export const QUILLOPY_API_KEY: string;
-	export const CLAUDE_CODE_ENTRYPOINT: string;
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
@@ -45,7 +43,6 @@ declare module '$env/static/private' {
 	export const VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const CONDA_PROMPT_MODIFIER: string;
-	export const MallocSpaceEfficient: string;
 	export const ZDOTDIR: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
 	export const MallocNanoZone: string;
@@ -54,7 +51,6 @@ declare module '$env/static/private' {
 	export const npm_config_local_prefix: string;
 	export const ENABLE_IDE_INTEGRATION: string;
 	export const ZSH: string;
-	export const GIT_EDITOR: string;
 	export const NVM_DIR: string;
 	export const USER: string;
 	export const LS_COLORS: string;
@@ -82,7 +78,6 @@ declare module '$env/static/private' {
 	export const PWD: string;
 	export const npm_lifecycle_event: string;
 	export const EDITOR: string;
-	export const OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: string;
 	export const npm_package_name: string;
 	export const LANG: string;
 	export const npm_config_npm_version: string;
@@ -103,7 +98,6 @@ declare module '$env/static/private' {
 	export const LOGNAME: string;
 	export const npm_lifecycle_script: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
-	export const COREPACK_ENABLE_AUTO_PIN: string;
 	export const NVM_BIN: string;
 	export const CONDA_DEFAULT_ENV: string;
 	export const npm_config_user_agent: string;
@@ -113,7 +107,7 @@ declare module '$env/static/private' {
 	export const INFOPATH: string;
 	export const HOMEBREW_CELLAR: string;
 	export const OSLogRateLimit: string;
-	export const CLAUDECODE: string;
+	export const GIT_PAGER: string;
 	export const PROJECT_ROOT: string;
 	export const npm_node_execpath: string;
 	export const npm_config_prefix: string;
@@ -150,9 +144,7 @@ declare module '$env/dynamic/private' {
 	export const env: {
 		NVM_INC: string;
 		MANPATH: string;
-		NoDefaultCurrentDirectoryInExePath: string;
 		QUILLOPY_API_KEY: string;
-		CLAUDE_CODE_ENTRYPOINT: string;
 		TERM_PROGRAM: string;
 		NODE: string;
 		INIT_CWD: string;
@@ -167,7 +159,6 @@ declare module '$env/dynamic/private' {
 		VSCODE_PYTHON_AUTOACTIVATE_GUARD: string;
 		TERM_PROGRAM_VERSION: string;
 		CONDA_PROMPT_MODIFIER: string;
-		MallocSpaceEfficient: string;
 		ZDOTDIR: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
 		MallocNanoZone: string;
@@ -176,7 +167,6 @@ declare module '$env/dynamic/private' {
 		npm_config_local_prefix: string;
 		ENABLE_IDE_INTEGRATION: string;
 		ZSH: string;
-		GIT_EDITOR: string;
 		NVM_DIR: string;
 		USER: string;
 		LS_COLORS: string;
@@ -204,7 +194,6 @@ declare module '$env/dynamic/private' {
 		PWD: string;
 		npm_lifecycle_event: string;
 		EDITOR: string;
-		OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: string;
 		npm_package_name: string;
 		LANG: string;
 		npm_config_npm_version: string;
@@ -225,7 +214,6 @@ declare module '$env/dynamic/private' {
 		LOGNAME: string;
 		npm_lifecycle_script: string;
 		VSCODE_GIT_IPC_HANDLE: string;
-		COREPACK_ENABLE_AUTO_PIN: string;
 		NVM_BIN: string;
 		CONDA_DEFAULT_ENV: string;
 		npm_config_user_agent: string;
@@ -235,7 +223,7 @@ declare module '$env/dynamic/private' {
 		INFOPATH: string;
 		HOMEBREW_CELLAR: string;
 		OSLogRateLimit: string;
-		CLAUDECODE: string;
+		GIT_PAGER: string;
 		PROJECT_ROOT: string;
 		npm_node_execpath: string;
 		npm_config_prefix: string;

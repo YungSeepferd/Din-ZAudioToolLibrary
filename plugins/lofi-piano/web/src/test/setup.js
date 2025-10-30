@@ -87,7 +87,7 @@ class MockAudioContext {
       type: 'lowpass',
       frequency: { value: 350, setValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn() },
       Q: { value: 1, setValueAtTime: vi.fn() },
-      gain: { value: 0, setValueAtTime: vi.fn() },
+      gain: { value: 0, setValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn() },
       connect: vi.fn().mockReturnThis(),
       disconnect: vi.fn()
     };
@@ -105,6 +105,15 @@ class MockAudioContext {
     return {
       buffer: null,
       normalize: true,
+      connect: vi.fn().mockReturnThis(),
+      disconnect: vi.fn()
+    };
+  }
+
+  createScriptProcessor(bufferSize = 4096, numberOfInputChannels = 1, numberOfOutputChannels = 1) {
+    return {
+      bufferSize,
+      onaudioprocess: null,
       connect: vi.fn().mockReturnThis(),
       disconnect: vi.fn()
     };

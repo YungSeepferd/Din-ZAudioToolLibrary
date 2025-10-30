@@ -124,7 +124,7 @@ export {
  * const prog = generateCompleteProgression(60, 'major', ['I', 'IV', 'V', 'I']);
  * // Returns: { progression: [...], analysis: {...}, info: {...} }
  */
-export function generateCompleteProgression(rootMidi, scaleType, progressionRoman) {
+export async function generateCompleteProgression(rootMidi, scaleType, progressionRoman) {
   const { generateProgression, analyzeVoiceLeading } = await import('./progressions.js');
   const { getScaleInfo } = await import('./scales.js');
   const { midiToNoteName } = await import('./midi.js');

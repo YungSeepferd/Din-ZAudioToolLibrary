@@ -13,13 +13,14 @@
   import { createAudioState } from '$stores/audio-state.svelte.js';
   import PianoKeyboard from '$components/piano/PianoKeyboard.svelte';
   import ControlPanel from '$components/controls/ControlPanel.svelte';
+  import ChordGenerator from '$components/chord-generator/ChordGenerator.svelte';
 
   // Create audio state instance
   const audioState = createAudioState();
 
   let isReady = $state(false);
   let error = $state(null);
-  let showControls = $state(true);
+  let currentView = $state('piano'); // 'piano' | 'chords'
 
   onMount(async () => {
     try {
@@ -41,32 +42,56 @@
   });
 
   /**
-   * Toggle control panel visibility
+   * Switch between Piano and Chord Generator views
    */
-  function toggleControls() {
-    showControls = !showControls;
+  function switchView(view) {
+    currentView = view;
   }
 </script>
 
 <main>
   <div class="container">
     <!-- Header Section -->
-    <div class="header">
-      <h1>🎹 LoFi Piano</h1>
-      <p class="subtitle">Nostalgic warm piano for lo-fi hip-hop beats</p>
-
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="app-title">🎹 LoFi Piano</h1>
+        <p class="app-subtitle">Nostalgic warm piano for lo-fi beats</p>
+      </div>
+      
       {#if isReady}
-        <div class="status-bar">
-          <span class="status-indicator active">● Live</span>
-          <span class="note-count">
-            {audioState.pianoState.activeNotes.size} notes playing
-          </span>
-          <button class="toggle-btn" onclick={toggleControls}>
-            {showControls ? '▼ Hide Controls' : '▶ Show Controls'}
+        <!-- Tab Navigation -->
+        <nav class="view-tabs" role="tablist">
+          <button
+            class="tab"
+            class:active={currentView === 'piano'}
+            onclick={() => switchView('piano')}
+            role="tab"
+            aria-selected={currentView === 'piano'}
+            aria-controls="piano-panel"
+          >
+            Piano
           </button>
+          <button
+            class="tab"
+            class:active={currentView === 'chords'}
+            onclick={() => switchView('chords')}
+            role="tab"
+            aria-selected={currentView === 'chords'}
+            aria-controls="chords-panel"
+          >
+            Chord Generator
+          </button>
+        </nav>
+        
+        <!-- Status Info -->
+        <div class="status-info">
+          <span class="status-indicator">● Live</span>
+          <span class="note-count">
+            {audioState.pianoState.activeNotes.size} notes
+          </span>
         </div>
       {/if}
-    </div>
+    </header>
 
     {#if error}
       <!-- Error State -->
@@ -79,42 +104,20 @@
         </p>
       </div>
     {:else if isReady}
-      <!-- Main Content -->
-      <div class="content">
-        <!-- Control Panel Section -->
-        {#if showControls}
-          <div class="controls-section">
+      <!-- Main Content with View Switching -->
+      <div class="app-content">
+        {#if currentView === 'piano'}
+          <div class="piano-view" id="piano-panel" role="tabpanel">
             <ControlPanel {audioState} />
+            <div class="keyboard-wrapper">
+              <PianoKeyboard {audioState} />
+            </div>
+          </div>
+        {:else if currentView === 'chords'}
+          <div class="chords-view" id="chords-panel" role="tabpanel">
+            <ChordGenerator {audioState} />
           </div>
         {/if}
-
-        <!-- Piano Keyboard Section -->
-        <div class="keyboard-section">
-          <PianoKeyboard {audioState} />
-        </div>
-
-        <!-- Info Section -->
-        <div class="info-section">
-          <div class="info-card">
-            <h3>🎵 Getting Started</h3>
-            <ul>
-              <li>Click piano keys to play notes</li>
-              <li>Use QWERTY keys (Z-M) for keyboard playing</li>
-              <li>Adjust controls above to shape your sound</li>
-              <li>Drag across keys for glissando effect</li>
-            </ul>
-          </div>
-
-          <div class="info-card">
-            <h3>🎛️ Quick Tips</h3>
-            <ul>
-              <li><strong>Saturation:</strong> Adds warm, tape-like color</li>
-              <li><strong>Compression:</strong> Controls dynamics</li>
-              <li><strong>Reverb:</strong> Adds space and ambience</li>
-              <li><strong>Envelope:</strong> Shapes note attack and decay</li>
-            </ul>
-          </div>
-        </div>
       </div>
     {:else}
       <!-- Loading State -->
@@ -128,155 +131,156 @@
 </main>
 
 <style>
+  /* ========================================
+     LAYOUT CONTAINER - Vintage Aesthetic
+     ======================================== */
+  
   main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
-    padding: 2rem;
+    padding: var(--space-6);
+    background: var(--bg-primary);
   }
 
   .container {
-    max-width: 1400px;
+    max-width: var(--container-2xl);
     width: 100%;
-    background: rgba(30, 41, 59, 0.8);
-    border-radius: 16px;
-    padding: 2rem;
-    border: 1px solid rgba(100, 116, 139, 0.2);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    margin: 0 auto;
   }
 
-  .header {
+  /* ========================================
+     HEADER & NAVIGATION
+     ======================================== */
+  
+  .app-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-bottom: var(--space-6);
+    margin-bottom: var(--space-8);
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .header-content {
     text-align: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid rgba(100, 116, 139, 0.3);
-    padding-bottom: 1.5rem;
   }
 
-  h1 {
-    font-size: 2.5rem;
+  .app-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .app-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
     margin: 0;
-    color: #f1f5f9;
-    font-weight: 700;
+    font-weight: var(--font-weight-normal);
   }
 
-  .subtitle {
-    margin: 0.5rem 0 0;
-    color: #cbd5e1;
-    font-size: 1rem;
+  /* Tab Navigation */
+  .view-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 0;
   }
 
-  .status-bar {
+  .tab {
+    padding: var(--space-3) var(--space-6);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: var(--border-default);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-colors);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .tab:hover {
+    background: var(--accent);
+    color: var(--text-primary);
+    border-color: var(--accent-hover);
+  }
+
+  .tab.active {
+    background: var(--accent);
+    color: var(--text-primary);
+    border-color: var(--accent-hover);
+    box-shadow: var(--shadow-md);
+  }
+
+  .tab:focus-visible {
+    outline: var(--border-width-normal) solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Status Info */
+  .status-info {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
+    gap: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
   }
 
   .status-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #94a3b8;
-  }
-
-  .status-indicator.active {
-    color: #22c55e;
+    color: var(--color-success);
+    font-weight: var(--font-weight-semibold);
   }
 
   .note-count {
-    font-size: 0.875rem;
-    color: #cbd5e1;
-    font-weight: 500;
-    padding: 0.25rem 0.75rem;
-    background: rgba(96, 165, 250, 0.1);
+    padding: var(--space-1) var(--space-3);
+    background: var(--bg-secondary);
     border-radius: var(--border-radius-sm);
+    border: var(--border-default);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-family-mono);
   }
 
-  .toggle-btn {
-    padding: 0.5rem 1rem;
-    background: rgba(96, 165, 250, 0.1);
-    color: var(--accent);
-    border: 1px solid rgba(96, 165, 250, 0.3);
-    border-radius: var(--border-radius-sm);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  /* ========================================
+     MAIN CONTENT VIEWS
+     ======================================== */
+  
+  .app-content {
+    width: 100%;
   }
 
-  .toggle-btn:hover {
-    background: rgba(96, 165, 250, 0.2);
-    border-color: rgba(96, 165, 250, 0.5);
-  }
-
-  .toggle-btn:active {
-    transform: scale(0.98);
-  }
-
-  .content {
+  .piano-view,
+  .chords-view {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--gap-sections);
+    animation: fadeIn var(--transition-base) var(--ease-out);
   }
 
-  .controls-section {
+  .keyboard-wrapper {
     width: 100%;
   }
 
-  .keyboard-section {
-    width: 100%;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .info-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-  }
-
-  .info-card {
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid rgba(96, 165, 250, 0.1);
-    border-radius: var(--border-radius-md);
-    padding: 1.5rem;
-  }
-
-  .info-card h3 {
-    margin: 0 0 1rem 0;
-    color: var(--accent);
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .info-card ul {
-    margin: 0;
-    padding-left: 1.5rem;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  .info-card li {
-    margin-bottom: 0.5rem;
-  }
-
-  .info-card strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-
+  /* ========================================
+     ERROR STATE
+     ======================================== */
+  
   .error-state {
     text-align: center;
-    padding: 4rem 2rem;
-    color: #fca5a5;
+    padding: var(--space-16);
+    color: var(--color-error);
   }
 
   .error-icon {
@@ -285,38 +289,46 @@
   }
 
   .error-state h2 {
-    color: #fca5a5;
-    margin: 1rem 0;
+    color: var(--color-error);
+    margin: var(--space-4) 0;
+    font-weight: var(--font-weight-bold);
   }
 
   .error-message {
-    color: #fecaca;
-    font-family: 'Monaco', 'Courier New', monospace;
-    background: rgba(239, 68, 68, 0.1);
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    margin: 1rem 0;
+    color: var(--color-error);
+    font-family: var(--font-family-mono);
+    background: var(--bg-secondary);
+    padding: var(--space-4);
+    border-radius: var(--border-radius-md);
+    border: var(--border-width-thin) solid var(--color-error);
+    margin: var(--space-4) auto;
+    max-width: 600px;
+    font-size: var(--font-size-sm);
   }
 
   .error-help {
-    color: #cbd5e1;
-    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-4);
   }
 
+  /* ========================================
+     LOADING STATE
+     ======================================== */
+  
   .loading {
     text-align: center;
-    color: #cbd5e1;
-    padding: 4rem 2rem;
+    color: var(--text-secondary);
+    padding: var(--space-16);
   }
 
   .spinner {
     width: 50px;
     height: 50px;
-    margin: 0 auto 1.5rem;
-    border: 4px solid rgba(96, 165, 250, 0.2);
+    margin: 0 auto var(--space-6);
+    border: 4px solid var(--border-color);
     border-top-color: var(--accent);
-    border-radius: 50%;
+    border-radius: var(--border-radius-full);
     animation: spin 1s linear infinite;
   }
 
@@ -327,56 +339,85 @@
   }
 
   .loading p {
-    margin: 0.5rem 0;
-    color: #cbd5e1;
-    font-size: 1rem;
+    margin: var(--space-2) 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
   }
 
   .loading-hint {
-    font-size: 0.875rem;
-    color: #94a3b8;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
     font-style: italic;
   }
 
-  /* Responsive design */
+  /* ========================================
+     RESPONSIVE DESIGN
+     ======================================== */
+  
   @media (max-width: 1024px) {
-    .container {
-      padding: 1.5rem;
+    main {
+      padding: var(--space-4);
     }
 
-    h1 {
-      font-size: 2rem;
+    .app-header {
+      gap: var(--space-3);
     }
 
-    .status-bar {
-      flex-direction: column;
-      gap: 0.75rem;
+    .app-title {
+      font-size: var(--font-size-xl);
     }
   }
 
   @media (max-width: 768px) {
     main {
-      padding: 1rem;
+      padding: var(--space-3);
     }
 
-    .container {
-      padding: 1rem;
+    .app-header {
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
     }
 
-    h1 {
-      font-size: 1.75rem;
+    .app-title {
+      font-size: var(--font-size-lg);
     }
 
-    .subtitle {
-      font-size: 0.875rem;
+    .app-subtitle {
+      font-size: var(--font-size-sm);
     }
 
-    .info-section {
-      grid-template-columns: 1fr;
+    .view-tabs {
+      flex-direction: column;
+      gap: var(--space-2);
     }
 
-    .content {
-      gap: 1.5rem;
+    .tab {
+      width: 100%;
+    }
+
+    .status-info {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .piano-view,
+    .chords-view {
+      gap: var(--gap-controls);
+    }
+  }
+
+  /* ========================================
+     ACCESSIBILITY
+     ======================================== */
+  
+  @media (prefers-reduced-motion: reduce) {
+    .piano-view,
+    .chords-view {
+      animation: none;
+    }
+
+    .spinner {
+      animation: spin 2s linear infinite;
     }
   }
 </style>

@@ -27,11 +27,11 @@
    *
    * USAGE:
    * <ChordDisplay
-   *   {rootMidi}
-   *   {scaleType}
+   *   rootMidi={60}
+   *   scaleType="major"
    *   bind:selectedChordRoman
-   *   onChordSelect={(roman) => { /* handle selection */ }}
-   *   onChordPlay={(notes) => { audioState.playChord(notes); }}
+   *   onChordSelect={handleChordSelect}
+   *   onChordPlay={handleChordPlay}
    * />
    */
 

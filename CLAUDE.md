@@ -66,6 +66,7 @@ This file provides essential context for Claude Code instances working on the Au
    - Only essential project files at root (`.mcp.json`, `CLAUDE.md`, package files)
    - No feature documentation in root
    - Keep root clean for quick navigation
+   - Always check whether there are .md files that belong in the docs folder
 
 2. **Project Documentation Goes in `docs/projects/[project-name]/`**
    - Each project gets its own documentation folder

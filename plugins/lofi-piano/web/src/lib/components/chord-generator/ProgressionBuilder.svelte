@@ -27,10 +27,10 @@
    *
    * USAGE:
    * <ProgressionBuilder
-   *   {rootMidi}
-   *   {scaleType}
-   *   {audioState}
-   *   onProgressionChange={(prog) => { /* handle update */ }}
+   *   rootMidi={60}
+   *   scaleType="major"
+   *   audioState={pianoState}
+   *   onProgressionChange={handleProgressionChange}
    * />
    */
 
