@@ -366,7 +366,7 @@
       {@const noteLabel = `${noteInfo.name}${showOctaveNumbers ? noteInfo.octave : ''}`}
 
       <button
-        class:key
+        class="key"
         class:white-key={!isBlack}
         class:black-key={isBlack}
         data-note={midiNote}
@@ -377,7 +377,7 @@
         ontouchstart={handleKeyDown}
         ontouchend={handleKeyUp}
         title={`${noteLabel} (MIDI ${midiNote})`}
-        aria-label="Piano key {noteLabel}"
+        aria-label={`Piano key ${noteLabel}`}
       >
         {#if showNoteNames && !isBlack}
           <span class="note-label">{noteInfo.name}</span>

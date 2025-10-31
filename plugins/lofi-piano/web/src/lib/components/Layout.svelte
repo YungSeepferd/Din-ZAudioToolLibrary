@@ -22,24 +22,37 @@
   let error = $state(null);
   let currentView = $state('piano'); // 'piano' | 'chords'
 
+  // Initialize audio system on component mount (without unlocking yet)
   onMount(async () => {
     try {
-      // Unlock AudioContext for iOS/mobile browsers
-      await unlockAudioContext();
-
-      // Initialize audio system
+      // Initialize audio system (creates AudioContext but doesn't unlock it)
       await audioState.init();
 
       isReady = true;
       console.log('✓ LoFi Piano initialized');
-      console.log('  - Audio context ready');
+      console.log('  - Audio context created');
       console.log('  - Effect chain connected');
-      console.log('  - Ready to play');
+      console.log('  - Waiting for user interaction to unlock audio');
     } catch (err) {
       console.error('Failed to initialize audio:', err);
       error = err.message;
     }
   });
+
+  /**
+   * Unlock AudioContext on user interaction
+   * MUST be called in response to user event (click, touch, etc.)
+   */
+  async function handleUserInteraction() {
+    if (isReady && !error) {
+      try {
+        await unlockAudioContext();
+      } catch (err) {
+        console.error('Failed to unlock audio:', err);
+        error = err.message;
+      }
+    }
+  }
 
   /**
    * Switch between Piano and Chord Generator views
@@ -49,7 +62,7 @@
   }
 </script>
 
-<main>
+<main onclick={handleUserInteraction}>
   <div class="container">
     <!-- Header Section -->
     <header class="app-header">
