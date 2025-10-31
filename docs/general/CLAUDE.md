@@ -546,25 +546,10 @@ This project is pre-configured with multiple MCP servers and Claude Code tools f
 | **svelte** | HTTP Remote | ✅ Enabled | Creating UI components, Svelte 5 Runes, reactivity, component patterns |
 | **github** | Node Command | ✅ Enabled | Repository management, PR creation, issue queries, code search |
 | **sequential-thinking** | Node Command | ✅ Enabled | Complex problem-solving, multi-step reasoning, planning algorithms |
-| **quillopy** | Node Command | ✅ Enabled | General library documentation (600+ pre-indexed); limited for audio frameworks; see note below |
+| **quillopy** | Node Command | ✅ Enabled | Fetch documentation for libraries (Tone.js, Web Audio, etc.); @quillopy [library] syntax |
 | **playwright** | Node Command | ✅ Enabled | Browser automation, testing UI components, visual regression testing |
 | **mcp-compass** | Node Command | ✅ Enabled | Discover and recommend MCP servers for new tasks |
 | **nodejs-docs** | Node Command | ❌ Disabled | Node.js API reference; not available on npm (swap for alternate if needed) |
-
-**⚠️ Important: Quillopy Limitations for Audio Development**
-
-Quillopy currently does NOT have pre-indexed documentation for these key audio frameworks:
-- ❌ Web Audio API (`webaudio`, `web-audio-api`)
-- ❌ Tone.js (`tonejs`, `tone.js`)
-- ❌ JUCE (`juce`, `juce-framework`)
-- ❌ SuperCollider (`supercollider`)
-
-**Recommended Alternative Approach for Audio Frameworks:**
-1. **Use `WebFetch` tool** → Fetch docs directly from official sources (faster, more reliable)
-2. **Use `WebSearch` tool** → Find current information and examples
-3. **Use `@svelte`** → Official Svelte 5 docs (always available and accurate)
-
-**Can I add audio docs to Quillopy?** Yes! Visit https://quillopy.com/add to contribute documentation for Tone.js, Web Audio API, or other frameworks. Quillopy is community-driven with 600+ libraries updated in real-time.
 
 #### MCP Server Usage Patterns
 
@@ -621,14 +606,10 @@ Quillopy currently does NOT have pre-indexed documentation for these key audio f
 - Run independent commands in parallel with separate Bash calls
 
 **External Information**:
-- Use `@svelte` for Svelte 5 documentation (always available and accurate)
-- **Audio Frameworks**: Use `WebFetch` or `WebSearch` (quillopy doesn't index audio libs yet)
-  - Web Audio API: Fetch from W3C/MDN
-  - Tone.js: Fetch from https://tonejs.github.io/
-  - JUCE: Fetch from https://juce.com/learn/tutorials
-  - SuperCollider: Fetch from https://docs.supercollider.online
+- Use `@svelte` for Svelte 5 documentation
+- Use `@quillopy[package-name]` for up-to-date library docs
+- Use `WebFetch` to analyze specific web pages
 - Use `WebSearch` for current information beyond knowledge cutoff
-- Use `WebFetch` to analyze specific web pages (auto-converts HTML to markdown)
 
 ### Choosing the Right Tool for Your Task
 
@@ -676,16 +657,16 @@ Why: Always up-to-date official docs, Runes syntax
 
 #### Scenario: Audio Algorithm Implementation
 ```
-✓ Use: WebFetch + Svelte documentation
-Example: Use WebFetch to get Web Audio docs, then code with @svelte for components
-Why: Web Audio API best practices from official sources, no MCP server needed
+✓ Use: @web-audio MCP server + code
+Example: "@web-audio show how to implement a resonant low-pass filter"
+Why: Official Web Audio API patterns, scheduling best practices
 ```
 
 #### Scenario: UI + Audio Combined
 ```
-✓ Use: @svelte (UI) + WebFetch (audio algorithms)
-Example: Use @svelte for component help, WebFetch for Web Audio patterns
-Why: @svelte handles UI perfectly; WebFetch gets audio docs when needed
+✓ Use: @svelte @web-audio (multi-server)
+Example: "@svelte @web-audio help me create a frequency knob component"
+Why: Combines UI knowledge with audio integration patterns
 ```
 
 #### Scenario: Complex Multi-File Exploration
@@ -718,33 +699,22 @@ Why: Tracks progress, prevents task loss
 ### MCP Server Usage Examples
 
 ```bash
-# Svelte UI questions (use @svelte - always available)
+# Single server query
+@web-audio show how to create a low-pass filter
 @svelte explain Runes reactivity
+@nodejs-docs what is process.env?
+
+# Multi-server query (combines expertise)
+@svelte @web-audio help me create an audio control component
+
+# With specific questions
+@web-audio how do I avoid clicks/pops when changing gain?
 @svelte what's the difference between $state and $derived?
-@svelte how do I bind: in components?
-
-# Audio algorithm help (use WebFetch - more reliable than quillopy for audio)
-# Example: getting Web Audio API docs
-"I need to implement a low-pass filter. Can you fetch the Web Audio API documentation on BiquadFilterNode?"
-# Claude will use WebFetch to get official docs
-
-# Combined UI + Audio (Svelte for components, WebFetch for audio)
-# Example: creating an audio control
-"Help me build a frequency knob component using @svelte for the UI and fetch the Web Audio API docs for frequency parameter handling"
-
-# Web search for current information
-"Search for the latest Tone.js examples for creating a synth"
-# Claude will use WebSearch
-
-# Complex problem-solving
-@sequential-thinking explain the audio graph for a ping-pong delay effect
-
-# Repository management
-@github create a pull request
 
 # Enable GitHub server (optional - requires GITHUB_TOKEN)
 export GITHUB_TOKEN=your_personal_access_token
 claude
+# Then: @github create a pull request
 ```
 
 ### Decision Tree: Choosing Your Tool
@@ -769,13 +739,11 @@ Do you need to execute commands?
 └─ No: Continue below
 
 Do you need reference/documentation?
-├─ Yes: Use appropriate tool
+├─ Yes: Use appropriate @mcp-server
 │   ├─ Svelte code? → @svelte
-│   ├─ Web Audio API? → WebFetch (quillopy doesn't index it)
-│   ├─ Tone.js? → WebFetch or WebSearch
-│   ├─ JUCE/SuperCollider? → WebFetch or WebSearch
+│   ├─ Web Audio? → @web-audio
 │   ├─ Node.js? → @nodejs-docs
-│   └─ Other libraries? → Try @quillopy[package-name] or WebFetch
+│   └─ NPM package? → @npm-registry
 └─ No: Continue below
 
 Do you have multiple independent tasks?
