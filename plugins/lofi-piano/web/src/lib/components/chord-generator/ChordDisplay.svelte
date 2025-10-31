@@ -175,10 +175,9 @@
       {@const isHovered = chord.roman === hoveredChord}
 
       <button
-        class="chord-card"
+        class="chord-card {chordFunc?.primary ? `function-${chordFunc.primary}` : ''}"
         class:selected={isSelected}
         class:hovered={isHovered}
-        class:function-{chordFunc?.primary}
         data-chord={chord.roman}
         onclick={() => selectChord(chord.roman)}
         onmouseenter={() => (hoveredChord = chord.roman)}

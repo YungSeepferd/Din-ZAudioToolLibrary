@@ -197,7 +197,7 @@
       </div>
     </div>
 
-    <div class="footer-divider" />
+    <div class="footer-divider"></div>
 
     <div class="footer-credit">
       <p>

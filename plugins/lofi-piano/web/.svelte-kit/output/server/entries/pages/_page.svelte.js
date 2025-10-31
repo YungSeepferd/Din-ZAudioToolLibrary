@@ -1,11 +1,11 @@
 import "clsx";
 function Layout($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
-    $$renderer2.push(`<main class="svelte-qgpshq"><div class="container svelte-qgpshq"><div class="header svelte-qgpshq"><h1 class="svelte-qgpshq">🎹 LoFi Piano</h1> <p class="subtitle svelte-qgpshq">Nostalgic warm piano for lo-fi hip-hop beats</p> `);
+    $$renderer2.push(`<main class="svelte-qgpshq"><div class="container svelte-qgpshq"><header class="app-header svelte-qgpshq"><div class="header-content svelte-qgpshq"><h1 class="app-title svelte-qgpshq">🎹 LoFi Piano</h1> <p class="app-subtitle svelte-qgpshq">Nostalgic warm piano for lo-fi beats</p></div> `);
     {
       $$renderer2.push("<!--[!-->");
     }
-    $$renderer2.push(`<!--]--></div> `);
+    $$renderer2.push(`<!--]--></header> `);
     {
       $$renderer2.push("<!--[!-->");
       {

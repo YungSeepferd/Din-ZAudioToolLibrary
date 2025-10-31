@@ -170,7 +170,7 @@
     width={width}
     height={height}
     class="spectrum-canvas"
-  />
+  ></canvas>
 
   <!-- Frequency labels for educational value -->
   <div class="frequency-labels">

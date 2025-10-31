@@ -175,7 +175,7 @@
       <label for="note-select" class="control-label">Root Note</label>
       <select
         id="note-select"
-        value={noteName.substring(0, noteName.length - 1)} <!-- Remove octave number -->
+        value={noteName.substring(0, noteName.length - 1)}
         onchange={(e) => handleNoteSelect(e.target.value)}
         aria-label="Select root note (C to B)"
       >

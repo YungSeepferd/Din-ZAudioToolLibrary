@@ -28,13 +28,6 @@
       "description": "On-demand up-to-date documentation for various libraries",
       "enabled": true
     },
-    "nodejs-docs": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-nodejs-docs"],
-      "description": "Node.js official documentation and API reference",
-      "enabled": false,
-      "notes": "Package unavailable on npm; enable after publishing or swap in alternate server"
-    },
     "playwright": {
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest"],

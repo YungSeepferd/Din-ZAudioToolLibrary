@@ -1,51 +1,111 @@
 # Documentation Index - LoFi Piano Plugin Project
 
-**Last Updated**: 2025-10-28
-**Total Documentation**: 6 new files + 1 updated file
-**Total Lines**: 2,500+ lines of comprehensive guides
+**Last Updated**: 2025-10-30
+**Documentation Version**: 2.0 (Reorganized Structure)
+**Total Documents**: 40+ files across 8 categories
+
+## 📂 Documentation Structure
+
+### Getting Started (`/docs/general/`)
+
+- **`GETTING_STARTED.md`** - Initial setup and configuration
+- **`CLAUDE.md`** - Claude AI integration and tooling reference
+
+### Architecture (`/docs/architecture/`)
+
+- **`ARCHITECTURE.md`** - High-level system architecture
+- **`IMPLEMENTATION-SUMMARY.md`** - Technical implementation details
+
+### Learning Resources (`/docs/learning/`)
+
+- **`LEARNING_PATH.md`** - Structured learning journey
+- **`AUDIO_UI_LEARNING_PATH.md`** - Audio UI development guide
+- **`MUSIC-THEORY-GUIDE.md`** - Music theory reference
+- **`MIDI-CHORD-GENERATOR-PHASES.md`** - Chord generation implementation
+
+### Development Guides (`/docs/guides/`)
+
+- **`CODE_QUALITY_GUIDE.md`** - Coding standards and best practices
+- **`FRAMEWORKS_AND_TOOLS.md`** - Framework and tooling reference
+- **`PLUGIN_DEVELOPMENT.md`** - Plugin architecture guide
+- **`WEB_AUDIO_API_GUIDE.md`** - Web Audio API reference
+- **`SVELTE5_AUDIO_GUIDE.md`** - Svelte 5 audio patterns
+- **`SVELTE5-STANDARDS-CRITICAL-REVIEW.md`** - Svelte 5 best practices
+- **`VISUAL-FEEDBACK-GUIDE.md`** - Visualizer implementation guide
+
+### Testing (`/docs/testing/`)
+
+- **`SPRINT-COMPLETION-REPORT.md`** - Test execution reports
+- **`TESTING-STRATEGY.md`** - Testing approach and methodologies
+
+### Project Planning (`/docs/planning/`)
+
+- **`PHASE2-ENHANCEMENT-ROADMAP.md`** - Phase 2 planning
+- **`PHASE3-ADVANCED-FEATURES-ROADMAP.md`** - Phase 3 planning
+- **`PHASE4-DOCUMENTATION-ROADMAP.md`** - Documentation strategy
+- **`PROJECT_OUTLOOK.md`** - Future plugins and improvements
+
+### Project-Specific (`/docs/projects/lofi-piano/`)
+
+- **`README.md`** - Main project documentation
+- **`DESIGN_SYSTEM.md`** - Visual design tokens and components
+- **`IMPLEMENTATION_PROGRESS.md`** - Current implementation status
+- **`PHASE*_COMPLETION_SUMMARY.md`** - Phase completion reports
+- **`QUICK_START.md`** - Quick start guide
+- **`ROADMAP.md`** - Project timeline and milestones
+
+### Research (`/docs/research/`)
+
+- **`SENIOR_DEVELOPER_NOTES.md`** - Expert insights and patterns
+- **`SENIOR_AUDIT_EXECUTIVE_SUMMARY.md`** - Code quality audit
 
 ---
 
-## 🗂️ Complete File Directory
+## 📖 How to Use This Documentation
 
-### Root Directory
+### For New Developers
 
-#### Main Project Hub
-- **`LOFI_PIANO_README.md`** (11 KB)
-  - 🎯 START HERE - Main entry point for the project
-  - Project overview and what you'll build
-  - Quick start instructions (5 minutes)
-  - FAQ and troubleshooting
-  - Links to all other documentation
+1. Start with `general/GETTING_STARTED.md`
+2. Review `architecture/ARCHITECTURE.md`
+3. Follow `learning/LEARNING_PATH.md`
+4. Check `projects/lofi-piano/QUICK_START.md`
 
-#### Project Overviews
-- **`LOFI_PIANO_PROJECT_SUMMARY.md`** (9.5 KB)
-  - Summary of everything created
-  - Project statistics and metrics
-  - Learning path alignment
-  - Completion checklist
-  - Next steps
+### For Feature Development
 
-#### Core Project Context
-- **`CLAUDE.md`** (UPDATED)
-  - Enhanced with comprehensive MCP server reference (7 servers)
-  - Complete tool documentation (12 tools)
-  - Decision trees for tool selection
-  - Workflow patterns and best practices
+1. Check `planning/` for relevant roadmaps
+2. Review `guides/` for implementation patterns
+3. Follow `CODE_QUALITY_GUIDE.md`
+4. Update `IMPLEMENTATION_PROGRESS.md`
+
+### For Documentation Updates
+
+1. Update the relevant section
+2. Update this index if needed
+3. Ensure all links are relative to the new structure
 
 ---
 
-### Documentation Directory (`docs/`)
+## 🔄 Maintenance
 
-#### Quick Learning Guides
+### Adding New Documents
 
-**`LOFI_PIANO_QUICK_START.md`** (8.2 KB)
-- 5-minute orientation guide
-- What you're building at a glance
-- Architecture diagram
-- Technology overview table
-- Audio concepts quick reference
-- Svelte 5 Runes quick reference
+1. Place in the most appropriate category
+2. Update this index with a brief description
+3. Ensure all internal links use relative paths
+
+### Updating Links
+
+Use relative paths from the document's location:
+
+- `../` to go up one level
+- `./` for same directory
+- No leading slash for project root
+
+### Versioning
+
+- Update the "Last Updated" date
+- Increment version number for major structural changes
+
 - Development workflow summary
 - FAQ section
 - Getting help with MCP servers

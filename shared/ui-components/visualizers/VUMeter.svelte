@@ -263,7 +263,7 @@
     width={width}
     height={height}
     class="vu-canvas"
-  />
+  ></canvas>
 
   <!-- Level readout -->
   <div class="level-readout">

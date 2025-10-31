@@ -57,7 +57,7 @@
 
 <div class="knob-container">
   {#if label}
-    <label>{label}</label>
+    <label for="knob-input">{label}</label>
   {/if}
   <div
     class="knob"
@@ -69,8 +69,9 @@
     aria-valuemin={min}
     aria-valuemax={max}
     aria-valuenow={value}
+    tabindex="0"
   >
-    <div class="knob-indicator" />
+    <div class="knob-indicator"></div>
   </div>
   <input
     type="range"

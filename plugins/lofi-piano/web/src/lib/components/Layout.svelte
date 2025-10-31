@@ -60,7 +60,7 @@
       
       {#if isReady}
         <!-- Tab Navigation -->
-        <nav class="view-tabs" role="tablist">
+        <div class="view-tabs" role="tablist">
           <button
             class="tab"
             class:active={currentView === 'piano'}
@@ -81,7 +81,7 @@
           >
             Chord Generator
           </button>
-        </nav>
+        </div>
         
         <!-- Status Info -->
         <div class="status-info">
