@@ -2,6 +2,12 @@
 
 Welcome! This directory contains everything you need to build a professional nostalgic lo-fi piano synthesizer while mastering modern web audio development.
 
+## 🎮 Live Demo
+
+**Try it now**: https://yungseepferd.github.io/Din-ZAudioToolLibrary/
+
+The plugin is deployed automatically via GitHub Actions on every push to `main`. See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for details.
+
 ---
 
 ## 📍 Start Here

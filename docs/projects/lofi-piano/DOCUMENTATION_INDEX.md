@@ -53,6 +53,9 @@
 - **`PHASE*_COMPLETION_SUMMARY.md`** - Phase completion reports
 - **`QUICK_START.md`** - Quick start guide
 - **`ROADMAP.md`** - Project timeline and milestones
+- **`DEPLOYMENT.md`** - GitHub Pages deployment and CI/CD setup
+- **`CHANGELOG.md`** - Version history and change log
+- **`VST_AU_TRANSLATION_GUIDE.md`** - Native plugin translation strategy
 
 ### Research (`/docs/research/`)
 

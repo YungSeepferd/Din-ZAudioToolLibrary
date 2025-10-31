@@ -25,7 +25,10 @@ export default {
       '@shared': resolve(__dirname, '../../../shared')
     },
     paths: {
-      base: ''
+      // Use environment variable for GitHub Pages deployment
+      // Locally: base = '' (empty)
+      // GitHub Pages: base = '/Din-ZAudioToolLibrary'
+      base: process.env.NODE_ENV === 'production' ? '/Din-ZAudioToolLibrary' : ''
     }
   }
 };
