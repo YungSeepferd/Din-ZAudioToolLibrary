@@ -20,7 +20,7 @@
 
   let isReady = $state(false);
   let error = $state(null);
-  let currentView = $state('piano'); // 'piano' | 'chords'
+  let isChordGeneratorOpen = $state(false); // Collapsible chord generator
 
   // Initialize audio system on component mount (without unlocking yet)
   onMount(async () => {
@@ -55,10 +55,10 @@
   }
 
   /**
-   * Switch between Piano and Chord Generator views
+   * Toggle chord generator visibility
    */
-  function switchView(view) {
-    currentView = view;
+  function toggleChordGenerator() {
+    isChordGeneratorOpen = !isChordGeneratorOpen;
   }
 </script>
 
@@ -70,32 +70,8 @@
         <h1 class="app-title">🎹 LoFi Piano</h1>
         <p class="app-subtitle">Nostalgic warm piano for lo-fi beats</p>
       </div>
-      
+
       {#if isReady}
-        <!-- Tab Navigation -->
-        <div class="view-tabs" role="tablist">
-          <button
-            class="tab"
-            class:active={currentView === 'piano'}
-            onclick={() => switchView('piano')}
-            role="tab"
-            aria-selected={currentView === 'piano'}
-            aria-controls="piano-panel"
-          >
-            Piano
-          </button>
-          <button
-            class="tab"
-            class:active={currentView === 'chords'}
-            onclick={() => switchView('chords')}
-            role="tab"
-            aria-selected={currentView === 'chords'}
-            aria-controls="chords-panel"
-          >
-            Chord Generator
-          </button>
-        </div>
-        
         <!-- Status Info -->
         <div class="status-info">
           <span class="status-indicator">● Live</span>
@@ -117,20 +93,42 @@
         </p>
       </div>
     {:else if isReady}
-      <!-- Main Content with View Switching -->
+      <!-- Main Content - Unified Single Screen -->
       <div class="app-content">
-        {#if currentView === 'piano'}
-          <div class="piano-view" id="piano-panel" role="tabpanel">
-            <ControlPanel {audioState} />
-            <div class="keyboard-wrapper">
-              <PianoKeyboard {audioState} />
+        <!-- Piano Section (Always Visible) -->
+        <section class="piano-section" aria-label="Piano keyboard and controls">
+          <ControlPanel {audioState} />
+          <div class="keyboard-wrapper">
+            <PianoKeyboard {audioState} />
+          </div>
+        </section>
+
+        <!-- Chord Generator Section (Collapsible) -->
+        <section class="chord-section" aria-label="Chord generator tools">
+          <button
+            class="section-toggle"
+            onclick={toggleChordGenerator}
+            aria-expanded={isChordGeneratorOpen}
+            aria-controls="chord-generator-panel"
+          >
+            <span class="toggle-icon" class:expanded={isChordGeneratorOpen}>▶</span>
+            <span class="toggle-title">Chord Generator</span>
+            <span class="toggle-hint">
+              {isChordGeneratorOpen ? 'Hide' : 'Show'} chord building tools
+            </span>
+          </button>
+
+          {#if isChordGeneratorOpen}
+            <div
+              class="chord-panel"
+              id="chord-generator-panel"
+              role="region"
+              aria-label="Chord generator content"
+            >
+              <ChordGenerator {audioState} />
             </div>
-          </div>
-        {:else if currentView === 'chords'}
-          <div class="chords-view" id="chords-panel" role="tabpanel">
-            <ChordGenerator {audioState} />
-          </div>
-        {/if}
+          {/if}
+        </section>
       </div>
     {:else}
       <!-- Loading State -->
@@ -192,45 +190,6 @@
     font-weight: var(--font-weight-normal);
   }
 
-  /* Tab Navigation */
-  .view-tabs {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: 0;
-  }
-
-  .tab {
-    padding: var(--space-3) var(--space-6);
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    border: var(--border-default);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    transition: var(--transition-colors);
-    letter-spacing: var(--letter-spacing-wide);
-  }
-
-  .tab:hover {
-    background: var(--accent);
-    color: var(--text-primary);
-    border-color: var(--accent-hover);
-  }
-
-  .tab.active {
-    background: var(--accent);
-    color: var(--text-primary);
-    border-color: var(--accent-hover);
-    box-shadow: var(--shadow-md);
-  }
-
-  .tab:focus-visible {
-    outline: var(--border-width-normal) solid var(--accent);
-    outline-offset: 2px;
-  }
-
   /* Status Info */
   .status-info {
     display: flex;
@@ -256,15 +215,18 @@
   }
 
   /* ========================================
-     MAIN CONTENT VIEWS
+     MAIN CONTENT - UNIFIED LAYOUT
      ======================================== */
-  
+
   .app-content {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sections);
   }
 
-  .piano-view,
-  .chords-view {
+  /* Piano Section (Always Visible) */
+  .piano-section {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sections);
@@ -275,6 +237,66 @@
     width: 100%;
   }
 
+  /* Chord Generator Section (Collapsible) */
+  .chord-section {
+    margin-top: var(--space-4);
+  }
+
+  .section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: var(--border-default);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-colors);
+    letter-spacing: var(--letter-spacing-wide);
+    text-align: left;
+  }
+
+  .section-toggle:hover {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    box-shadow: var(--shadow-md);
+  }
+
+  .section-toggle:focus-visible {
+    outline: var(--border-width-normal) solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .toggle-icon {
+    font-size: var(--font-size-sm);
+    transition: transform 0.2s var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .toggle-icon.expanded {
+    transform: rotate(90deg);
+  }
+
+  .toggle-title {
+    flex: 1;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .toggle-hint {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-normal);
+  }
+
+  .chord-panel {
+    margin-top: var(--space-4);
+    animation: slideDown 0.3s var(--ease-out);
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -282,6 +304,19 @@
     }
     to {
       opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      max-height: 2000px;
       transform: translateY(0);
     }
   }
@@ -399,13 +434,13 @@
       font-size: var(--font-size-sm);
     }
 
-    .view-tabs {
-      flex-direction: column;
-      gap: var(--space-2);
+    .section-toggle {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
     }
 
-    .tab {
-      width: 100%;
+    .toggle-hint {
+      display: none;
     }
 
     .status-info {
@@ -413,8 +448,7 @@
       gap: var(--space-2);
     }
 
-    .piano-view,
-    .chords-view {
+    .piano-section {
       gap: var(--gap-controls);
     }
   }
@@ -422,11 +456,15 @@
   /* ========================================
      ACCESSIBILITY
      ======================================== */
-  
+
   @media (prefers-reduced-motion: reduce) {
-    .piano-view,
-    .chords-view {
+    .piano-section,
+    .chord-panel {
       animation: none;
+    }
+
+    .toggle-icon {
+      transition: none;
     }
 
     .spinner {
