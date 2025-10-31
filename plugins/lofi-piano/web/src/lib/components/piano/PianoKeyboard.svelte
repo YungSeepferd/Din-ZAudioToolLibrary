@@ -356,6 +356,37 @@
   // Generate the notes array once during initialization
   // {#each} will iterate over this to render all keys
   const notes = generateNotes();
+
+  /**
+   * Calculate the left position for a black key
+   *
+   * Black keys need to be positioned between white keys.
+   * This counts how many WHITE keys came before this black key,
+   * then calculates the offset based on white key width.
+   *
+   * @param {number} midiNote - MIDI note number for the black key
+   * @param {number} index - Index in the notes array
+   * @returns {number} Left position in pixels
+   */
+  function getBlackKeyPosition(midiNote, index) {
+    // Count white keys before this black key
+    let whiteKeyCount = 0;
+    for (let i = 0; i < index; i++) {
+      if (!isBlackKey(notes[i])) {
+        whiteKeyCount++;
+      }
+    }
+
+    // White key width (must match CSS)
+    const whiteKeyWidth = 60;
+
+    // Position black key at the right edge of the previous white key
+    // Subtract half the black key width to center it
+    const blackKeyWidth = 36;
+    const position = (whiteKeyCount * whiteKeyWidth) - (blackKeyWidth / 2);
+
+    return position;
+  }
 </script>
 
 <div class="keyboard-container" bind:this={keyboardElement}>
@@ -364,11 +395,13 @@
       {@const isBlack = isBlackKey(midiNote)}
       {@const noteInfo = getNoteInfo(midiNote)}
       {@const noteLabel = `${noteInfo.name}${showOctaveNumbers ? noteInfo.octave : ''}`}
+      {@const blackKeyLeft = isBlack ? getBlackKeyPosition(midiNote, idx) : 0}
 
       <button
         class="key"
         class:white-key={!isBlack}
         class:black-key={isBlack}
+        style={isBlack ? `left: ${blackKeyLeft}px` : ''}
         data-note={midiNote}
         onmousedown={handleKeyDown}
         onmouseup={handleKeyUp}
@@ -504,8 +537,6 @@
     cursor: pointer;
     user-select: none;
     position: absolute;
-    margin-left: -18px;
-    margin-right: -18px;
     z-index: 10;
     transition: all 0.05s ease;
     /* Deep shadow for 3D effect */
@@ -580,8 +611,6 @@
     .key.black-key {
       width: 27px;
       height: 130px;
-      margin-left: -13.5px;
-      margin-right: -13.5px;
     }
 
     .note-label {
@@ -612,8 +641,6 @@
     .key.black-key {
       width: 20px;
       height: 100px;
-      margin-left: -10px;
-      margin-right: -10px;
     }
 
     .note-label {

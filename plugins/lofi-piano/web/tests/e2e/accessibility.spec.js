@@ -107,7 +107,9 @@ test.describe('Accessibility & WCAG Compliance', () => {
       const ariaLabel = await key.getAttribute('aria-label');
 
       expect(ariaLabel).toBeTruthy(`Piano key ${i} should have aria-label`);
-      expect(ariaLabel?.length).toBeGreaterThan(0);
+      if (ariaLabel) {
+        expect(ariaLabel.length).toBeGreaterThan(0);
+      }
     }
   });
 

@@ -139,7 +139,9 @@ test.describe('Effect Parameter Controls', () => {
 
     expect(ariaValueMin).toBeTruthy();
     expect(ariaValueMax).toBeTruthy();
-    expect(parseFloat(ariaValueMin!)).toBeLessThan(parseFloat(ariaValueMax!));
+    if (ariaValueMin && ariaValueMax) {
+      expect(parseFloat(ariaValueMin)).toBeLessThan(parseFloat(ariaValueMax));
+    }
   });
 
   test('✓ Should support precise value input via keyboard', async ({ page }) => {

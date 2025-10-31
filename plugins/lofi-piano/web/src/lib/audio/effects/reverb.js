@@ -91,10 +91,6 @@ export function createReverb(options = {}) {
     delayGains.push(gain);
   });
 
-  // Feedback paths for extended reverb
-  const feedbackGain = ctx.createGain();
-  feedbackGain.gain.value = roomSize * 0.5;
-
   // Tone control for reverb (low-pass filter to darken reflections)
   const toneFilter = ctx.createBiquadFilter();
   toneFilter.type = 'lowpass';
@@ -128,8 +124,8 @@ export function createReverb(options = {}) {
   }
 
   // Final reverb path
-  toneFilter.connect(feedbackGain);
-  feedbackGain.connect(preDelayNode); // Feedback into reverb
+  // REMOVED FEEDBACK LOOP: feedbackGain.connect(preDelayNode) caused infinite buildup
+  // The delay chain already provides natural decay, no circular routing needed
   toneFilter.connect(wetGain);
 
   // Mix dry and wet
@@ -208,9 +204,6 @@ export function createReverb(options = {}) {
         const newDelayTime = delayTimes[index] * newRoomSize;
         delay.delayTime.linearRampToValueAtTime(newDelayTime, now + 0.05);
       });
-
-      // Update feedback
-      feedbackGain.gain.linearRampToValueAtTime(newRoomSize * 0.5, now + 0.05);
 
       return this;
     },
@@ -296,7 +289,6 @@ export function createReverb(options = {}) {
       preDelayNode.disconnect();
       delays.forEach((delay) => delay.disconnect());
       delayGains.forEach((gain) => gain.disconnect());
-      feedbackGain.disconnect();
       toneFilter.disconnect();
       outputGain.disconnect();
       return this;
