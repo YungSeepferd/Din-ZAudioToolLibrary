@@ -191,6 +191,9 @@ export function createAudioState() {
     /**
      * Play a piano note
      *
+     * IMPORTANT: If the note is already playing, this will stop the old voice
+     * and create a new one. This prevents feedback loops and voice accumulation.
+     *
      * @param {number} note - MIDI note (0-127)
      * @param {number} [velocity=100] - Velocity (0-127)
      * @param {number} [duration] - Optional duration in ms
@@ -200,6 +203,16 @@ export function createAudioState() {
 
       // Clamp note to valid MIDI range
       const validNote = Math.max(0, Math.min(127, note));
+
+      // CRITICAL FIX: If this note is already playing, stop it first
+      // This prevents voice accumulation and feedback loops
+      if (pianoVoices.has(validNote)) {
+        const oldVoice = pianoVoices.get(validNote);
+        oldVoice.noteOff();
+        oldVoice.disconnect();
+        pianoVoices.delete(validNote);
+      }
+
       const freq = noteToFrequency(validNote);
 
       // Create new voice
@@ -236,6 +249,9 @@ export function createAudioState() {
     /**
      * Stop a piano note
      *
+     * IMPORTANT: Immediately removes the voice from tracking to prevent
+     * race conditions with rapid note retriggering.
+     *
      * @param {number} note - MIDI note to stop (0-127)
      */
     stopNote(note) {
@@ -243,13 +259,14 @@ export function createAudioState() {
       const voice = pianoVoices.get(validNote);
 
       if (voice) {
+        // Trigger release envelope
         voice.noteOff();
 
-        // Remove voice after release time
-        setTimeout(() => {
-          voice.disconnect();
-          pianoVoices.delete(validNote);
-        }, synthesis.releaseTime * 1000);
+        // CRITICAL FIX: Clean up immediately, don't wait for release to complete
+        // The Web Audio engine will handle the release naturally
+        // Waiting causes race conditions if the note is played again quickly
+        voice.disconnect();
+        pianoVoices.delete(validNote);
       }
 
       pianoState.activeNotes.delete(validNote);

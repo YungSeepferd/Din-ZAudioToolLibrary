@@ -145,18 +145,24 @@ export function createPianoVoice(options = {}) {
      * Start the voice and trigger ADSR envelope
      * Automatically schedules attack, decay, and sustain phases.
      *
+     * IMPORTANT: Can only be called once per voice instance.
+     * Web Audio oscillators cannot be restarted after stop().
+     * Create a new voice instance to play the same note again.
+     *
      * @returns {Object} this (for chaining)
      */
     noteOn() {
+      // Prevent calling noteOn() multiple times on same voice
+      // This would fail because oscillators can't be restarted
       if (isPlaying) {
-        // If already playing, restart envelope
-        this.noteOff();
+        console.warn('noteOn() called on already-playing voice. Create a new voice instead.');
+        return this;
       }
 
       const now = ctx.currentTime;
       isPlaying = true;
 
-      // Start all oscillators
+      // Start all oscillators (can only be done once)
       oscillators.forEach((osc) => osc.start(now));
 
       // Schedule ADSR envelope
