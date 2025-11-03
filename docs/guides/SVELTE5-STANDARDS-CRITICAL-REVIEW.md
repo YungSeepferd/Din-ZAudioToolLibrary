@@ -157,7 +157,7 @@ $effect(() => {
 ```svelte
 <style>
   :global {
-    --color-gold: #d4a574;  // ❌ ERROR
+    --color-gold: #d4a574;  /* ❌ ERROR */
   }
 </style>
 ```

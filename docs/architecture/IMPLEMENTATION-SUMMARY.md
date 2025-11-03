@@ -92,7 +92,7 @@ Every component now includes **4 levels of documentation**:
 ```svelte
 <style>
   :global {
-    --color-gold: #d4a574;  // ❌ ERROR in Svelte 5
+    --color-gold: #d4a574;  /* ❌ ERROR in Svelte 5 */
   }
 </style>
 ```
@@ -101,7 +101,7 @@ Every component now includes **4 levels of documentation**:
 ```svelte
 <style>
   .knob-container {
-    --color-gold: #d4a574;  // ✅ Now scoped
+    --color-gold: #d4a574;  /* ✅ Now scoped */
     /* ... rest of styles ... */
   }
 </style>
