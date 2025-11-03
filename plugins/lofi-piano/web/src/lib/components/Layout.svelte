@@ -9,7 +9,6 @@
 
 <script>
   import { onMount } from 'svelte';
-  import { unlockAudioContext } from '$audio/context.js';
   import { createAudioState } from '$stores/audio-state.svelte.js';
   import PianoKeyboard from '$components/piano/PianoKeyboard.svelte';
   import ControlPanel from '$components/controls/ControlPanel.svelte';
@@ -40,21 +39,6 @@
   });
 
   /**
-   * Unlock AudioContext on user interaction
-   * MUST be called in response to user event (click, touch, etc.)
-   */
-  async function handleUserInteraction() {
-    if (isReady && !error) {
-      try {
-        await unlockAudioContext();
-      } catch (err) {
-        console.error('Failed to unlock audio:', err);
-        error = err.message;
-      }
-    }
-  }
-
-  /**
    * Toggle chord generator visibility
    */
   function toggleChordGenerator() {
@@ -62,7 +46,7 @@
   }
 </script>
 
-<main onclick={handleUserInteraction}>
+<main>
   <div class="container">
     <!-- Header Section -->
     <header class="app-header">
