@@ -1,8 +1,8 @@
 # Documentation Index - LoFi Piano Plugin Project
 
-**Last Updated**: 2025-10-30
-**Documentation Version**: 2.0 (Reorganized Structure)
-**Total Documents**: 40+ files across 8 categories
+**Last Updated**: 2025-11-03
+**Documentation Version**: 2.1 (Added ARCHIVE for historical documents)
+**Total Documents**: 40+ files across 8 categories + archived historical reports
 
 ## 📂 Documentation Structure
 
@@ -50,12 +50,14 @@
 - **`README.md`** - Main project documentation
 - **`DESIGN_SYSTEM.md`** - Visual design tokens and components
 - **`IMPLEMENTATION_PROGRESS.md`** - Current implementation status
-- **`PHASE*_COMPLETION_SUMMARY.md`** - Phase completion reports
 - **`QUICK_START.md`** - Quick start guide
 - **`ROADMAP.md`** - Project timeline and milestones
 - **`DEPLOYMENT.md`** - GitHub Pages deployment and CI/CD setup
 - **`CHANGELOG.md`** - Version history and change log
 - **`VST_AU_TRANSLATION_GUIDE.md`** - Native plugin translation strategy
+- **`COMPONENT_REFERENCE.md`** - Component API documentation
+- **`BUILD_SUCCESS_SUMMARY.md`** - Build system resolution summary
+- **`ARCHIVE/`** - Historical completion reports and phase summaries (10 archived documents)
 
 ### Research (`/docs/research/`)
 
@@ -391,6 +393,8 @@ All documentation has been:
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2025-11-03 | 2.1 | Added ARCHIVE/ directory for historical completion reports; moved 10 old documents |
+| 2025-10-30 | 2.0 | Reorganized documentation structure across categories |
 | 2025-10-28 | 1.0 | Initial documentation creation |
 
 ---

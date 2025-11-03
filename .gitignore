@@ -8,6 +8,12 @@ build/
 .turbo/
 *.node
 
+# SvelteKit
+.svelte-kit/
+.vercel/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
 # Tauri
 target/
 src-tauri/target/
@@ -34,3 +40,11 @@ pnpm-debug.log*
 *.mp3
 *.aiff
 !resources/samples/.gitkeep
+
+
+# AI Assistant Artifacts
+.github/instructions/codacy.instructions.md
+.codacy/
+.roo/
+.roomodes
+Modelfile
