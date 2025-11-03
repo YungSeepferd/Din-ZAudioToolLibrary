@@ -5,6 +5,7 @@ This guide explains how to set up and configure MCP servers for accessing framew
 ## What is an MCP Server?
 
 An MCP (Model Context Protocol) server is a specialized service that extends Claude's capabilities by providing:
+
 - Real-time access to documentation
 - Framework-specific tools and utilities
 - Code execution in specific languages
@@ -15,11 +16,13 @@ An MCP (Model Context Protocol) server is a specialized service that extends Cla
 ### 1. Find Claude Desktop Config
 
 **macOS/Linux**:
+
 ```bash
 ~/.config/Claude/claude_desktop_config.json
 ```
 
 **Windows**:
+
 ```
 %APPDATA%\Claude\claude_desktop_config.json
 ```
@@ -75,18 +78,21 @@ In conversations with Claude, reference the MCP servers:
 ### Phase 1: Core Frameworks (Ready)
 
 #### Svelte MCP
+
 - **Purpose**: Svelte UI framework documentation
 - **Status**: Using official @sveltejs/mcp
 - **Docs**: https://svelte.dev/docs
 - **Usage**: `@svelte explain runes`
 
 #### Web Audio MCP
+
 - **Purpose**: Web Audio API reference and examples
 - **Status**: Custom implementation in progress
 - **Docs**: https://www.w3.org/TR/webaudio/
 - **Usage**: `@web-audio show delay node API`
 
 #### Tone.js MCP
+
 - **Purpose**: High-level audio framework
 - **Status**: Custom implementation in progress
 - **Docs**: https://tonejs.github.io/
@@ -95,6 +101,7 @@ In conversations with Claude, reference the MCP servers:
 ### Phase 2: Audio Synthesis Tools (In Development)
 
 #### Pure Data MCP
+
 - **Purpose**: Visual audio programming reference
 - **Status**: Custom implementation in progress
 - **Docs**: https://puredata.info/docs
@@ -102,6 +109,7 @@ In conversations with Claude, reference the MCP servers:
 - **Usage**: `@puredata show audio object reference`
 
 #### SuperCollider MCP
+
 - **Purpose**: Advanced DSP and synthesis
 - **Status**: Custom implementation in progress
 - **Docs**: https://docs.supercollider.online
@@ -111,11 +119,13 @@ In conversations with Claude, reference the MCP servers:
 ### Phase 3: Plugin Frameworks (Planned)
 
 #### JUCE MCP
+
 - **Purpose**: Cross-platform plugin development
 - **Docs**: https://juce.com/learn
 - **Planned**: Week 3
 
 #### iPlug2 MCP
+
 - **Purpose**: Simplified plugin framework
 - **Docs**: https://iplug2.github.io/
 - **Planned**: Week 3
@@ -140,16 +150,11 @@ In conversations with Claude, reference the MCP servers:
  * @framework-name [query or command]
  */
 
-import {
-  Server,
-  Tool,
-  TextContent,
-  ErrorContent
-} from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server, Tool, TextContent, ErrorContent } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 const server = new Server({
-  name: "framework-name-mcp",
-  version: "1.0.0",
+  name: 'framework-name-mcp',
+  version: '1.0.0',
   capabilities: {
     tools: {}
   }
@@ -157,29 +162,29 @@ const server = new Server({
 
 // Tool 1: Search documentation
 server.addTool({
-  name: "search_docs",
-  description: "Search framework documentation",
+  name: 'search_docs',
+  description: 'Search framework documentation',
   inputSchema: {
-    type: "object",
+    type: 'object',
     properties: {
       query: {
-        type: "string",
-        description: "Search query"
+        type: 'string',
+        description: 'Search query'
       }
     },
-    required: ["query"]
+    required: ['query']
   },
   handler: async (args) => {
     try {
       // Implementation: search local docs or fetch from API
       const results = await searchDocumentation(args.query);
       return new TextContent({
-        type: "text",
+        type: 'text',
         text: JSON.stringify(results, null, 2)
       });
     } catch (error) {
       return new ErrorContent({
-        type: "text",
+        type: 'text',
         text: `Error searching docs: ${error.message}`
       });
     }
@@ -188,28 +193,28 @@ server.addTool({
 
 // Tool 2: Get API reference
 server.addTool({
-  name: "api_reference",
-  description: "Get API reference for a specific function/class",
+  name: 'api_reference',
+  description: 'Get API reference for a specific function/class',
   inputSchema: {
-    type: "object",
+    type: 'object',
     properties: {
       name: {
-        type: "string",
-        description: "Function or class name"
+        type: 'string',
+        description: 'Function or class name'
       }
     },
-    required: ["name"]
+    required: ['name']
   },
   handler: async (args) => {
     try {
       const reference = await getAPIReference(args.name);
       return new TextContent({
-        type: "text",
+        type: 'text',
         text: reference
       });
     } catch (error) {
       return new ErrorContent({
-        type: "text",
+        type: 'text',
         text: `Error fetching API reference: ${error.message}`
       });
     }
@@ -218,32 +223,32 @@ server.addTool({
 
 // Tool 3: Code examples
 server.addTool({
-  name: "code_examples",
-  description: "Get code examples for a feature",
+  name: 'code_examples',
+  description: 'Get code examples for a feature',
   inputSchema: {
-    type: "object",
+    type: 'object',
     properties: {
       feature: {
-        type: "string",
-        description: "Feature name or pattern"
+        type: 'string',
+        description: 'Feature name or pattern'
       },
       language: {
-        type: "string",
-        description: "Programming language (optional)"
+        type: 'string',
+        description: 'Programming language (optional)'
       }
     },
-    required: ["feature"]
+    required: ['feature']
   },
   handler: async (args) => {
     try {
       const examples = await getCodeExamples(args.feature, args.language);
       return new TextContent({
-        type: "text",
+        type: 'text',
         text: examples
       });
     } catch (error) {
       return new ErrorContent({
-        type: "text",
+        type: 'text',
         text: `Error fetching examples: ${error.message}`
       });
     }
@@ -275,7 +280,7 @@ async function searchDocumentation(query) {
   const docsDir = path.join(process.cwd(), 'resources', 'docs', 'framework-name');
 
   // Read all markdown files
-  const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.md'));
+  const files = fs.readdirSync(docsDir).filter((f) => f.endsWith('.md'));
 
   const results = [];
 
@@ -287,7 +292,7 @@ async function searchDocumentation(query) {
     if (content.toLowerCase().includes(query.toLowerCase())) {
       // Extract relevant section
       const lines = content.split('\n');
-      const relevantLines = lines.filter(line =>
+      const relevantLines = lines.filter((line) =>
         line.toLowerCase().includes(query.toLowerCase())
       );
 
@@ -322,32 +327,38 @@ resources/docs/framework-name/
 
 ### Example: Web Audio Documentation
 
-```markdown
+````markdown
 # Web Audio API Reference
 
 ## Quick Links
+
 - Official Spec: https://www.w3.org/TR/webaudio/
 - MDN Guide: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 - MDN Examples: https://github.com/mdn/webaudio-examples
 
 ## Core Concepts
+
 - AudioContext: Manages all audio processing
 - AudioNode: Building blocks of audio processing
 - Audio Graph: How nodes connect together
 - Scheduling: Timing audio events
 
 ## Common Nodes
+
 ### OscillatorNode
+
 - Generates periodic waveforms
 - Types: sine, square, sawtooth, triangle
 - Main properties: frequency, type, detune
 
 ### GainNode
+
 - Controls volume
 - Main property: gain
 - Use: Volume control, amplitude modulation
 
 ### BiquadFilterNode
+
 - Digital filter
 - Types: lowpass, highpass, bandpass, etc.
 - Main properties: frequency, Q, gain
@@ -370,7 +381,9 @@ oscillator.start();
 // ... later
 oscillator.stop();
 ```
-```
+````
+
+````
 
 ## Maintenance
 
@@ -387,7 +400,7 @@ rm -rf tools/mcp-servers/.cache
 
 # 3. Restart Claude if needed
 # (Usually automatic)
-```
+````
 
 ### Testing MCP Servers
 
@@ -404,6 +417,7 @@ node tools/mcp-servers/framework-mcp.js
 ### MCP Server Not Appearing
 
 1. **Check Configuration**:
+
    ```bash
    cat ~/.config/Claude/claude_desktop_config.json
    ```
@@ -423,6 +437,7 @@ node tools/mcp-servers/framework-mcp.js
 ### MCP Server Errors
 
 Check Claude's logs:
+
 ```bash
 # macOS
 tail -f ~/Library/Logs/Claude/claude.log
@@ -457,8 +472,8 @@ tail -f ~/Library/Logs/Claude/claude.log
 ---
 
 For framework-specific MCP server documentation, see:
+
 - Svelte: `docs/FRAMEWORKS_AND_TOOLS.md#svelte-mcp`
 - Web Audio: `docs/FRAMEWORKS_AND_TOOLS.md#web-audio-mcp`
 - SuperCollider: `docs/FRAMEWORKS_AND_TOOLS.md#supercollider-mcp`
 - Pure Data: `docs/FRAMEWORKS_AND_TOOLS.md#pure-data-mcp`
-

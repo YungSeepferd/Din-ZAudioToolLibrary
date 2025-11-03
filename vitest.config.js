@@ -30,12 +30,12 @@ export default defineConfig({
         'dist/',
         '**/*.test.js',
         '**/*.spec.js',
-        '**/index.js', // Public API exports
+        '**/index.js' // Public API exports
       ],
       lines: 80,
       functions: 80,
       branches: 80,
-      statements: 80,
+      statements: 80
     },
 
     // Test timeout (in milliseconds)
@@ -48,14 +48,14 @@ export default defineConfig({
     bail: 0,
 
     // Watch mode (auto-rerun on file changes)
-    watch: process.env.CI ? false : true,
+    watch: process.env.CI ? false : true
   },
 
   resolve: {
     alias: {
       '@audio': new URL('./shared/audio-core', import.meta.url).pathname,
       '@ui': new URL('./shared/ui-components', import.meta.url).pathname,
-      '@shared': new URL('./shared', import.meta.url).pathname,
-    },
-  },
+      '@shared': new URL('./shared', import.meta.url).pathname
+    }
+  }
 });

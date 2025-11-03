@@ -188,7 +188,7 @@ For each issue found:
 
 **Best Practices Used**: XML Tags, Examples, Chain of Thought
 
-```
+````
 I want to implement a [ALGORITHM_NAME] effect.
 
 Help me:
@@ -216,7 +216,7 @@ Help me:
    oscillator.connect(effect.input);
    effect.connect(destination);
    effect.setParam1(newValue);
-   ```
+````
 
 5. **Documentation**
    - Parameter ranges
@@ -225,6 +225,7 @@ Help me:
    - Links to resources
 
 Start with theory, show implementations, then Web Audio code.
+
 ```
 
 **Expected Output**: Complete algorithm implementation with documentation
@@ -238,41 +239,44 @@ Start with theory, show implementations, then Web Audio code.
 **Best Practices Used**: Examples, XML Tags, Chain of Thought
 
 ```
+
 Create a test suite for [AUDIO_MODULE] that verifies:
 
 <audio_test_requirements>
-  <initialization>
-    Can the module be created?
-    Does it initialize with correct defaults?
-    Does it handle invalid parameters?
-  </initialization>
-  <parameters>
-    Can parameters be changed?
-    Do values stay within range?
-    Are parameter changes applied correctly?
-  </parameters>
-  <connections>
-    Can nodes be connected properly?
-    Does audio flow correctly?
-    Can it be disconnected?
-  </connections>
-  <audio_output>
-    Does it produce sound?
-    Is the output level correct?
-    No clicks or pops?
-  </audio_output>
-  <edge_cases>
-    What if parameters are extreme?
-    What if nodes are connected multiple times?
-    What if disconnected before stopping?
-  </edge_cases>
+<initialization>
+Can the module be created?
+Does it initialize with correct defaults?
+Does it handle invalid parameters?
+</initialization>
+<parameters>
+Can parameters be changed?
+Do values stay within range?
+Are parameter changes applied correctly?
+</parameters>
+<connections>
+Can nodes be connected properly?
+Does audio flow correctly?
+Can it be disconnected?
+</connections>
+<audio_output>
+Does it produce sound?
+Is the output level correct?
+No clicks or pops?
+</audio_output>
+<edge_cases>
+What if parameters are extreme?
+What if nodes are connected multiple times?
+What if disconnected before stopping?
+</edge_cases>
 </audio_test_requirements>
 
 Provide:
+
 - Test file structure
 - Test cases for each requirement
 - How to test audio output
 - Debugging tips
+
 ```
 
 **Expected Output**: Complete test suite with explanations
@@ -286,21 +290,23 @@ Provide:
 **Best Practices Used**: Comparison Tables, Examples, Chain of Thought
 
 ```
+
 Compare how [ALGORITHM] is implemented across frameworks.
 
 For each framework, show:
 
 <comparison_template>
-  <framework>Name</framework>
-  <key_concepts>Main ideas and terminology</key_concepts>
-  <code_structure>How the code is organized</code_structure>
-  <parameters>What controls the effect</parameters>
-  <signal_flow>Input → Processing → Output</signal_flow>
-  <code_example>Working code snippet</code_example>
-  <notes>Framework-specific details</notes>
+<framework>Name</framework>
+<key_concepts>Main ideas and terminology</key_concepts>
+<code_structure>How the code is organized</code_structure>
+<parameters>What controls the effect</parameters>
+<signal_flow>Input → Processing → Output</signal_flow>
+<code_example>Working code snippet</code_example>
+<notes>Framework-specific details</notes>
 </comparison_template>
 
 Include:
+
 1. Pure Data patches
    @puredata find [ALGORITHM] implementation
 
@@ -314,10 +320,12 @@ Include:
    How to translate from Pd/SC to Web Audio
 
 Highlight:
+
 - Similarities across frameworks
 - Key differences
 - Why implementations differ
 - Best practices from each
+
 ```
 
 **Expected Output**: Side-by-side comparison with translation guide
@@ -333,24 +341,25 @@ Highlight:
 **Best Practices Used**: XML Tags, Examples, Structure
 
 ```
+
 Generate API documentation for [MODULE/CLASS].
 
 Create documentation with these sections:
 
 <api_documentation>
-  <overview>
-    One-paragraph summary of what it does
-  </overview>
+<overview>
+One-paragraph summary of what it does
+</overview>
 
   <installation>
     How to import/require it
     Any prerequisites?
   </installation>
 
-  <quick_start>
-    Minimal working example
-    Show basic usage
-  </quick_start>
+<quick_start>
+Minimal working example
+Show basic usage
+</quick_start>
 
   <functions>
     For each exported function:
@@ -376,20 +385,21 @@ Create documentation with these sections:
     Show common use cases
   </examples>
 
-  <best_practices>
-    Do's and don'ts
-    Common mistakes
-    Performance tips
-  </best_practices>
+<best_practices>
+Do's and don'ts
+Common mistakes
+Performance tips
+</best_practices>
 
-  <cross_references>
-    Related modules
-    Similar implementations in Pd/SC
-    External resources
-  </cross_references>
+<cross_references>
+Related modules
+Similar implementations in Pd/SC
+External resources
+</cross_references>
 </api_documentation>
 
 Format as markdown suitable for GitHub README.
+
 ```
 
 **Expected Output**: Complete API documentation in markdown
@@ -403,6 +413,7 @@ Format as markdown suitable for GitHub README.
 **Best Practices Used**: Examples, Chain of Thought, Progressive Complexity
 
 ```
+
 Create a tutorial for learning [FEATURE/CONCEPT].
 
 Structure it as:
@@ -444,10 +455,12 @@ Structure it as:
    - Community references
 
 Use:
+
 - Progressive examples (simple → complex)
 - Clear explanations before code
 - Working code that readers can copy
 - Diagrams for complex concepts
+
 ```
 
 **Expected Output**: Complete tutorial with examples
@@ -463,6 +476,7 @@ Use:
 **Best Practices Used**: Chain of Thought, XML Tags, Structured Analysis
 
 ```
+
 I'm debugging [ISSUE_DESCRIPTION].
 
 Please help me systematically:
@@ -498,10 +512,12 @@ Please help me systematically:
    - How to prevent it next time
 
 Provide:
+
 - Debugging commands to run
 - Console checks to perform
 - Expected vs actual behavior
 - Code fixes with explanations
+
 ```
 
 **Expected Output**: Systematic debugging guide
@@ -515,16 +531,14 @@ Provide:
 **Best Practices Used**: Analysis, Examples, Requirements
 
 ```
+
 Analyze test coverage for [MODULE].
 
 Check:
 
 <coverage_analysis>
-  <statements>
-    - Line coverage percentage
-    - Which lines aren't tested?
-    - Why are they hard to test?
-  </statements>
+<statements> - Line coverage percentage - Which lines aren't tested? - Why are they hard to test?
+</statements>
 
   <branches>
     - Branch coverage percentage
@@ -546,16 +560,19 @@ Check:
 </coverage_analysis>
 
 For low coverage areas:
+
 - Why aren't they tested?
 - Are they important to test?
 - How to improve coverage?
 - What tests should be added?
 
 Provide:
+
 - Coverage report interpretation
 - List of critical untested areas
 - New test suggestions
 - Improved test suite structure
+
 ```
 
 **Expected Output**: Coverage analysis with improvement suggestions
@@ -571,6 +588,7 @@ Provide:
 **Best Practices Used**: Analysis, Examples, Chain of Thought
 
 ```
+
 I need to optimize [COMPONENT/FUNCTION] performance.
 
 Please:
@@ -613,10 +631,12 @@ Please:
    - Best practices
 
 Provide:
+
 - Before/after code
 - Specific improvements
 - How to measure improvement
 - Reusable optimization pattern
+
 ```
 
 **Expected Output**: Optimized code with performance metrics
@@ -630,16 +650,14 @@ Provide:
 **Best Practices Used**: Specialized Knowledge, Examples, Analysis
 
 ```
+
 Optimize audio performance in [AUDIO_MODULE].
 
 Check for:
 
 <audio_performance>
-  <cpu_usage>
-    - Is the audio callback efficient?
-    - Any expensive operations in real-time path?
-    - Can processing move to separate thread?
-  </cpu_usage>
+<cpu_usage> - Is the audio callback efficient? - Any expensive operations in real-time path? - Can processing move to separate thread?
+</cpu_usage>
 
   <memory>
     - Memory leaks in audio graph?
@@ -659,19 +677,18 @@ Check for:
     - Proper ramping of automations?
   </artifacts>
 
-  <buffer_size>
-    - Optimal buffer size?
-    - Context sample rate matched?
-    - Proper handling of buffer changes?
-  </buffer_size>
+<buffer_size> - Optimal buffer size? - Context sample rate matched? - Proper handling of buffer changes?
+</buffer_size>
 </audio_performance>
 
 Provide:
+
 - Current performance metrics
 - Identified bottlenecks
 - Optimization suggestions with code
 - Expected improvement
 - How to measure audio quality
+
 ```
 
 **Expected Output**: Optimized audio code with performance analysis
@@ -687,14 +704,17 @@ Provide:
 **Best Practices Used**: Analysis, Examples, Chain of Thought
 
 ```
+
 Refactor [FILE/COMPONENT] to improve [ASPECT].
 
 Current issues:
+
 - [Issue 1]
 - [Issue 2]
 - [Issue 3]
 
 Goals:
+
 - [Goal 1]
 - [Goal 2]
 
@@ -729,9 +749,11 @@ Refactoring strategy:
    - Follows project standards
 
 Constraints:
+
 - No behavior changes
 - Keep API compatible if external
 - Improve readability and maintainability
+
 ```
 
 **Expected Output**: Step-by-step refactoring guide with final code
@@ -745,31 +767,21 @@ Constraints:
 **Best Practices Used**: Analysis, XML Tags, Examples
 
 ```
+
 Extract reusable components from [CODE/FILE].
 
 Identify:
 
 <component_extraction>
-  <duplicated_logic>
-    - Where is code repeated?
-    - How many times?
-    - Could it be extracted?
-  </duplicated_logic>
+<duplicated_logic> - Where is code repeated? - How many times? - Could it be extracted?
+</duplicated_logic>
 
-  <reusable_patterns>
-    - What patterns appear multiple times?
-    - Could they be generalized?
-    - What would parameterize them?
-  </reusable_patterns>
+<reusable_patterns> - What patterns appear multiple times? - Could they be generalized? - What would parameterize them?
+</reusable_patterns>
 
-  <new_components>
-    For each component to extract:
-    - Name and purpose
-    - Inputs (props/parameters)
-    - Outputs/returns
-    - Example usage
-    - Documentation
-  </new_components>
+<new_components>
+For each component to extract: - Name and purpose - Inputs (props/parameters) - Outputs/returns - Example usage - Documentation
+</new_components>
 </component_extraction>
 
 For each component:
@@ -781,15 +793,18 @@ For each component:
 5. Show how usage improves
 
 Benefits:
+
 - Reduced code duplication
 - Better reusability
 - Easier maintenance
 - Clear separation of concerns
 
 Provide:
+
 - Component implementations
 - Updated callers
 - Usage documentation
+
 ```
 
 **Expected Output**: New reusable components with refactored code
@@ -805,6 +820,7 @@ Provide:
 **Best Practices Used**: Chain of Thought, Examples, Progressive Complexity
 
 ```
+
 Help me learn [CONCEPT/TECHNOLOGY].
 
 I have [BACKGROUND] knowledge.
@@ -850,6 +866,7 @@ Please explain:
    - How to get proficient
 
 Ask me if anything isn't clear. Explain simply without jargon.
+
 ```
 
 **Expected Output**: Learning guide tailored to your level
@@ -863,6 +880,7 @@ Ask me if anything isn't clear. Explain simply without jargon.
 **Best Practices Used**: Comparison Tables, Analysis, Examples
 
 ```
+
 Compare [OPTION_A] vs [OPTION_B] for [USE_CASE].
 
 Create a comparison table:
@@ -877,6 +895,7 @@ Create a comparison table:
 </comparison>
 
 Evaluate:
+
 - Performance
 - Ease of learning
 - Documentation quality
@@ -889,16 +908,19 @@ Evaluate:
 - Drawbacks
 
 For my specific use case [CONTEXT]:
+
 - Which is better?
 - Why?
 - Any gotchas?
 
 Provide:
+
 - Detailed comparison table
 - Pros/cons for each
 - Recommendation with justification
 - Examples of each approach
 - Implementation guides
+
 ```
 
 **Expected Output**: Detailed comparison with recommendation
@@ -914,9 +936,11 @@ Provide:
 **Best Practices Used**: Structure, Chain of Thought, XML Tags
 
 ```
+
 Help me break down [LARGE_TASK] into manageable steps.
 
 Context:
+
 - Current status: [STATUS]
 - Timeline: [TIMEFRAME]
 - Resources: [WHAT_YOU_HAVE]
@@ -925,14 +949,9 @@ Context:
 I need:
 
 <task_breakdown>
-  <phases>
-    For each phase:
-    - Clear outcome
-    - Estimated time
-    - Required skills
-    - Dependencies
-    - Success criteria
-  </phases>
+<phases>
+For each phase: - Clear outcome - Estimated time - Required skills - Dependencies - Success criteria
+</phases>
 
   <tasks>
     For each task:
@@ -952,12 +971,14 @@ I need:
 </task_breakdown>
 
 Provide:
+
 - Logical task sequence
 - Time estimates for each
 - Task dependencies diagram
 - Risk areas
 - Contingency plans
 - Success metrics
+
 ```
 
 **Expected Output**: Detailed project plan with tasks and timeline
@@ -971,6 +992,7 @@ Provide:
 **Best Practices Used**: Structure, Completeness, Examples
 
 ```
+
 Create a code review checklist for [COMPONENT/FEATURE].
 
 The checklist should verify:
@@ -1016,15 +1038,18 @@ The checklist should verify:
    - [ ] No audio artifacts?
 
 For each item:
+
 - Why it matters
 - How to verify
 - What to look for
 - Common mistakes
 
 Provide:
+
 - Formatted checklist (markdown)
 - Instructions for reviewers
 - What warrants changes vs. suggestions
+
 ```
 
 **Expected Output**: Comprehensive review checklist
@@ -1038,6 +1063,7 @@ Provide:
 **Best Practices Used**: Structure, Examples, Summary
 
 ```
+
 Generate a progress report for [PROJECT/COMPONENT].
 
 Report period: [START_DATE] to [END_DATE]
@@ -1045,6 +1071,7 @@ Report period: [START_DATE] to [END_DATE]
 Include:
 
 <progress_report>
+
   <summary>
     Executive summary (2-3 sentences)
     Key accomplishments
@@ -1056,11 +1083,9 @@ Include:
     - Task 2: [description], [time spent]
   </completed>
 
-  <in_progress>
-    Current work:
-    - Task 1: [description], [% complete]
-    - Task 2: [description], [% complete]
-  </in_progress>
+<in_progress>
+Current work: - Task 1: [description], [% complete] - Task 2: [description], [% complete]
+</in_progress>
 
   <blocked>
     Any blockers?
@@ -1090,6 +1115,7 @@ Include:
 </progress_report>
 
 Make it suitable for stakeholders.
+
 ```
 
 **Expected Output**: Formatted progress report
@@ -1112,10 +1138,12 @@ Make it suitable for stakeholders.
 Many prompts work better with specific servers:
 
 ```
+
 @svelte @web-audio [Use Prompt 5 - Audio Algorithm Implementation]
 @github [Use Prompt 18 - Task Breakdown]
 @npm-registry [Use Prompt 17 - Research Comparison]
-```
+
+````
 
 ### 4. **Iterative Refinement**
 - Start with basic prompt
@@ -1133,9 +1161,10 @@ mkdir -p .claude_prompts/
 # Save frequently used prompts
 echo "# [Prompt Name]
 [Full prompt text]" > .claude_prompts/[name].md
-```
+````
 
 ### 6. **Template Variables**
+
 Define these once for all prompts:
 
 ```
@@ -1187,6 +1216,7 @@ Define these once for all prompts:
 ### Powerful Combinations
 
 **Learning + Code Review**:
+
 ```
 @svelte @web-audio
 [Prompt 16 - Learn Concept] + [Prompt 4 - Code Review]
@@ -1194,6 +1224,7 @@ Define these once for all prompts:
 ```
 
 **Framework Comparison + Implementation**:
+
 ```
 @puredata @supercollider @web-audio
 [Prompt 7 - Framework Comparison] + [Prompt 5 - Implementation]
@@ -1201,6 +1232,7 @@ Define these once for all prompts:
 ```
 
 **Git History + Refactoring**:
+
 ```
 @github
 [Prompt 18 - Task Breakdown] + [Prompt 14 - Refactoring]
@@ -1208,6 +1240,7 @@ Define these once for all prompts:
 ```
 
 **Performance + Optimization**:
+
 ```
 @npm-registry
 [Prompt 12 - Performance Optimization] + [Prompt 13 - Audio Performance]
@@ -1218,16 +1251,16 @@ Define these once for all prompts:
 
 ## Quick Reference
 
-| Goal | Prompts to Use |
-|------|---|
-| **Learn new topic** | 16 + Research |
-| **Code review** | 1, 2, 3, 4 |
-| **Audio development** | 5, 6, 7, 13 |
-| **Performance** | 12, 13, Debugging |
-| **Debugging** | 10, 11 |
-| **Documentation** | 8, 9, API |
-| **Refactoring** | 14, 15 |
-| **Testing** | 6, 11 |
+| Goal                  | Prompts to Use    |
+| --------------------- | ----------------- |
+| **Learn new topic**   | 16 + Research     |
+| **Code review**       | 1, 2, 3, 4        |
+| **Audio development** | 5, 6, 7, 13       |
+| **Performance**       | 12, 13, Debugging |
+| **Debugging**         | 10, 11            |
+| **Documentation**     | 8, 9, API         |
+| **Refactoring**       | 14, 15            |
+| **Testing**           | 6, 11             |
 
 ---
 
@@ -1244,7 +1277,7 @@ Define these once for all prompts:
 ---
 
 See also:
+
 - `CLAUDE_CODE_MCP_SETUP.md` - MCP server configuration
 - `../docs/CODE_QUALITY_GUIDE.md` - Code standards
 - `../docs/FRAMEWORKS_AND_TOOLS.md` - Framework integration
-
