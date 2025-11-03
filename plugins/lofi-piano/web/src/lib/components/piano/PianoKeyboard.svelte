@@ -41,6 +41,7 @@
    */
 
   import { onMount } from 'svelte';
+  import { unlockAudioContext } from '$audio/context.js';
 
   // ===== PROPS DESTRUCTURING (Svelte 5 $props rune) =====
   // audioState: Reference to the audio engine for playing/stopping notes
@@ -157,11 +158,22 @@
    *
    * WHY: Initiates note playback with standard velocity (100)
    * Also tracks state for drag-across-keys behavior
+   * IMPORTANT: Unlocks AudioContext on first interaction (required for browsers)
    *
    * @private
    */
-  function handleKeyDown(e) {
+  async function handleKeyDown(e) {
     if (!audioState) return;
+
+    // CRITICAL FIX: Unlock AudioContext on first user interaction
+    // This is required by browser autoplay policies
+    // unlockAudioContext() is idempotent - safe to call multiple times
+    try {
+      await unlockAudioContext();
+    } catch (err) {
+      console.error('Failed to unlock audio:', err);
+      return; // Don't play note if audio failed to unlock
+    }
 
     const midiNote = parseInt(e.currentTarget.dataset.note);
     const velocity = 100; // Standard velocity for all keys
@@ -249,10 +261,11 @@
    *
    * WHY: Enables playing piano with physical keyboard (Z-M keys)
    * Prevents key repeat events from triggering multiple times
+   * IMPORTANT: Unlocks AudioContext on first interaction (required for browsers)
    *
    * @private
    */
-  function handleWindowKeyDown(e) {
+  async function handleWindowKeyDown(e) {
     if (!audioState) return;
 
     const key = e.key.toLowerCase();
@@ -260,6 +273,15 @@
 
     // Check: mapping exists AND not a repeat (key held down)
     if (midiNote && !e.repeat) {
+      // CRITICAL FIX: Unlock AudioContext on first user interaction
+      // This is required by browser autoplay policies
+      try {
+        await unlockAudioContext();
+      } catch (err) {
+        console.error('Failed to unlock audio:', err);
+        return; // Don't play note if audio failed to unlock
+      }
+
       const velocity = 100;
       audioState.playNote(midiNote, velocity);
       activeKeys.set(midiNote, document.querySelector(`[data-note="${midiNote}"]`));
