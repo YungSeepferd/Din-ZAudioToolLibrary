@@ -13,8 +13,8 @@ importers:
         version: 1.20.2
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^3.0.0
-        version: 3.1.2(svelte@5.43.2)(vite@5.4.21)
+        specifier: ^4.0.0-next.6
+        version: 4.0.4(svelte@5.43.2)(vite@5.4.21)
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -95,8 +95,8 @@ importers:
         specifier: ^5.0.0
         version: 5.4.21
       vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(jsdom@26.1.0)
+        specifier: ^3.2.4
+        version: 3.2.4(jsdom@26.1.0)
 
   shared/audio-core:
     devDependencies:
