@@ -60,10 +60,10 @@
   // ===== LOCAL REACTIVE STATE (Svelte 5 $state rune) =====
   // keyboardElement: Reference to the keyboard container DOM node
   // isMouseDown: Track mouse button state for drag across keys
-  // activeKeys: Map of currently playing notes (note -> DOM element)
+  // activeKeys: Set of currently playing note numbers for visual feedback
   let keyboardElement = $state();
   let isMouseDown = $state(false);
-  let activeKeys = $state(new Map()); // Map of MIDI note -> element
+  let activeKeys = $state(new Set()); // Set of MIDI notes currently pressed
 
   // ===== KEYBOARD MAPPING & CONSTANTS =====
   // Static keyboard mapping - created once at module initialization
@@ -180,10 +180,8 @@
 
     // Tell audio engine to play this note
     audioState.playNote(midiNote, velocity);
-    // Track in active keys for cleanup on release
-    activeKeys.set(midiNote, e.currentTarget);
-    // Add CSS class for visual feedback (depression effect)
-    e.currentTarget.classList.add('active');
+    // Track in active keys for visual feedback (reactive Set triggers re-render)
+    activeKeys.add(midiNote);
     // Set flag so entering other keys while dragging will also play them
     isMouseDown = true;
   }
@@ -202,10 +200,8 @@
 
     // Tell audio engine to release this note
     audioState.stopNote(midiNote);
-    // Clean up tracking
+    // Clean up tracking (reactive Set triggers re-render)
     activeKeys.delete(midiNote);
-    // Remove visual feedback
-    e.currentTarget.classList.remove('active');
   }
 
   /**
@@ -229,8 +225,7 @@
     // Only trigger if not already active - prevents duplicate playback
     if (!activeKeys.has(midiNote)) {
       audioState.playNote(midiNote, velocity);
-      activeKeys.set(midiNote, e.currentTarget);
-      e.currentTarget.classList.add('active');
+      activeKeys.add(midiNote);
     }
   }
 
@@ -250,7 +245,6 @@
     if (activeKeys.has(midiNote)) {
       audioState.stopNote(midiNote);
       activeKeys.delete(midiNote);
-      e.currentTarget.classList.remove('active');
     }
   }
 
@@ -284,13 +278,7 @@
 
       const velocity = 100;
       audioState.playNote(midiNote, velocity);
-      activeKeys.set(midiNote, document.querySelector(`[data-note="${midiNote}"]`));
-
-      // Add visual feedback to match visual key press
-      const element = document.querySelector(`[data-note="${midiNote}"]`);
-      if (element) {
-        element.classList.add('active');
-      }
+      activeKeys.add(midiNote);
     }
   }
 
@@ -310,12 +298,6 @@
     if (midiNote) {
       audioState.stopNote(midiNote);
       activeKeys.delete(midiNote);
-
-      // Remove visual feedback
-      const element = document.querySelector(`[data-note="${midiNote}"]`);
-      if (element) {
-        element.classList.remove('active');
-      }
     }
   }
 
@@ -423,6 +405,7 @@
         class="key"
         class:white-key={!isBlack}
         class:black-key={isBlack}
+        class:active={activeKeys.has(midiNote)}
         style={isBlack ? `left: ${blackKeyLeft}px` : ''}
         data-note={midiNote}
         onmousedown={handleKeyDown}
@@ -433,6 +416,7 @@
         ontouchend={handleKeyUp}
         title={`${noteLabel} (MIDI ${midiNote})`}
         aria-label={`Piano key ${noteLabel}`}
+        aria-pressed={activeKeys.has(midiNote)}
       >
         {#if showNoteNames && !isBlack}
           <span class="note-label">{noteInfo.name}</span>
