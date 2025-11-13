@@ -17,10 +17,14 @@ export function createLowPassFilter(frequency = 1000, q = 1) {
   return {
     filter,
     setFrequency: (freq) => {
-      filter.frequency.setValueAtTime(freq, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.frequency.setValueAtTime(filter.frequency.value, now);
+      filter.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
     },
     setQ: (qValue) => {
-      filter.Q.setValueAtTime(qValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.Q.setValueAtTime(filter.Q.value, now);
+      filter.Q.linearRampToValueAtTime(qValue, now + 0.05); // 50ms smoothing
     },
     getFrequency: () => filter.frequency.value,
     getQ: () => filter.Q.value,
@@ -44,10 +48,14 @@ export function createHighPassFilter(frequency = 100, q = 1) {
   return {
     filter,
     setFrequency: (freq) => {
-      filter.frequency.setValueAtTime(freq, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.frequency.setValueAtTime(filter.frequency.value, now);
+      filter.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
     },
     setQ: (qValue) => {
-      filter.Q.setValueAtTime(qValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.Q.setValueAtTime(filter.Q.value, now);
+      filter.Q.linearRampToValueAtTime(qValue, now + 0.05); // 50ms smoothing
     },
     getFrequency: () => filter.frequency.value,
     getQ: () => filter.Q.value,
@@ -71,10 +79,14 @@ export function createBandPassFilter(frequency = 1000, q = 10) {
   return {
     filter,
     setFrequency: (freq) => {
-      filter.frequency.setValueAtTime(freq, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.frequency.setValueAtTime(filter.frequency.value, now);
+      filter.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
     },
     setQ: (qValue) => {
-      filter.Q.setValueAtTime(qValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.Q.setValueAtTime(filter.Q.value, now);
+      filter.Q.linearRampToValueAtTime(qValue, now + 0.05); // 50ms smoothing
     },
     getFrequency: () => filter.frequency.value,
     getQ: () => filter.Q.value,
@@ -99,13 +111,19 @@ export function createPeakingEQFilter(frequency = 1000, q = 1, gain = 0) {
   return {
     filter,
     setFrequency: (freq) => {
-      filter.frequency.setValueAtTime(freq, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.frequency.setValueAtTime(filter.frequency.value, now);
+      filter.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
     },
     setQ: (qValue) => {
-      filter.Q.setValueAtTime(qValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.Q.setValueAtTime(filter.Q.value, now);
+      filter.Q.linearRampToValueAtTime(qValue, now + 0.05); // 50ms smoothing
     },
     setGain: (gainValue) => {
-      filter.gain.setValueAtTime(gainValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.gain.setValueAtTime(filter.gain.value, now);
+      filter.gain.linearRampToValueAtTime(gainValue, now + 0.05); // 50ms smoothing
     },
     connect: (destination) => filter.connect(destination),
     disconnect: () => filter.disconnect(),
@@ -127,10 +145,14 @@ export function createShelfFilter(type = 'lowshelf', frequency = 200, gain = 0) 
   return {
     filter,
     setFrequency: (freq) => {
-      filter.frequency.setValueAtTime(freq, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.frequency.setValueAtTime(filter.frequency.value, now);
+      filter.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
     },
     setGain: (gainValue) => {
-      filter.gain.setValueAtTime(gainValue, ctx.currentTime);
+      const now = ctx.currentTime;
+      filter.gain.setValueAtTime(filter.gain.value, now);
+      filter.gain.linearRampToValueAtTime(gainValue, now + 0.05); // 50ms smoothing
     },
     connect: (destination) => filter.connect(destination),
     disconnect: () => filter.disconnect(),
@@ -161,13 +183,17 @@ export function createMultiPoleFilter(poles = 2, frequency = 1000, q = 1) {
   return {
     filters,
     setFrequency: (freq) => {
+      const now = ctx.currentTime;
       filters.forEach((f) => {
-        f.frequency.setValueAtTime(freq, ctx.currentTime);
+        f.frequency.setValueAtTime(f.frequency.value, now);
+        f.frequency.linearRampToValueAtTime(freq, now + 0.05); // 50ms smoothing
       });
     },
     setQ: (qValue) => {
+      const now = ctx.currentTime;
       filters.forEach((f) => {
-        f.Q.setValueAtTime(qValue, ctx.currentTime);
+        f.Q.setValueAtTime(f.Q.value, now);
+        f.Q.linearRampToValueAtTime(qValue, now + 0.05); // 50ms smoothing
       });
     },
     connect: (destination) => {
