@@ -51,6 +51,51 @@
     const delta = e.deltaY > 0 ? -step : step;
     value = Math.max(min, Math.min(max, value + delta));
   }
+
+  /**
+   * Handle keyboard input for accessibility (WCAG 2.1 AA compliance)
+   * Arrow keys: increase/decrease by step
+   * Page Up/Down: increase/decrease by 10 steps
+   * Home/End: jump to min/max
+   */
+  function handleKeyDown(e) {
+    let delta = 0;
+
+    switch(e.key) {
+      case 'ArrowUp':
+      case 'ArrowRight':
+        delta = step;
+        e.preventDefault();
+        break;
+      case 'ArrowDown':
+      case 'ArrowLeft':
+        delta = -step;
+        e.preventDefault();
+        break;
+      case 'PageUp':
+        delta = step * 10;
+        e.preventDefault();
+        break;
+      case 'PageDown':
+        delta = -step * 10;
+        e.preventDefault();
+        break;
+      case 'Home':
+        value = min;
+        e.preventDefault();
+        return;
+      case 'End':
+        value = max;
+        e.preventDefault();
+        return;
+      default:
+        return; // Don't handle other keys
+    }
+
+    if (delta !== 0) {
+      value = Math.max(min, Math.min(max, value + delta));
+    }
+  }
 </script>
 
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
@@ -64,6 +109,7 @@
     style="transform: rotate({rotation}deg)"
     onmousedown={handleMouseDown}
     onwheel={handleWheel}
+    onkeydown={handleKeyDown}
     role="slider"
     aria-label={label}
     aria-valuemin={min}
