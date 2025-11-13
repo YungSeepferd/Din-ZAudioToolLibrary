@@ -7,8 +7,7 @@
   "exports": {
     ".": "./index.js",
     "./controls": "./controls/index.js",
-    "./visualizers": "./visualizers/index.js",
-    "./layouts": "./layouts/index.js"
+    "./visualizers": "./visualizers/index.js"
   },
-  "files": ["controls", "visualizers", "layouts", "index.js"]
+  "files": ["controls", "visualizers", "index.js"]
 }
