@@ -319,7 +319,7 @@
 
     <!-- Control Buttons -->
     <div class="control-group">
-      <label class="control-label">Actions</label>
+      <div class="control-label">Actions</div>
       <div class="button-group">
         <button
           class="action-btn clear-btn"
